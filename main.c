@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <math.h>
 #include <stdarg.h>
-#include <string.h>
 #include "solve_block.h"
 #include "operators.h"
 #include "multi_grid.h"
@@ -17,7 +16,7 @@ void func(double* u, int i, int j, int k, double L, int N, double m, double dx) 
     u[n] = -m/sqrt(rsqrd);
 }
 
-void save_params(const char* str,int count, ...) {
+void save_params(const char* str, int count, ...) {
     FILE* file = fopen(str, "w");
     va_list list;
     va_start(list, count);
@@ -39,12 +38,10 @@ void save_gird(const char* str, double* vec, int length) {
 }
 
 
-
-
 int main() {
     int M = 8;
-    int N = (int)pow(2,M) + 1;
-    int N2 = (int)pow(2, M - 1) + 1;
+    int N = (int) pow(2, M) + 1;
+    int N2 = (int) pow(2, M - 1) + 1;
     int iters = 5;
     double w = 1.98;
     double L = 20;
@@ -59,7 +56,7 @@ int main() {
     double* u2 = calloc(sizeof(double), N*N*N);
     double* f = calloc(sizeof(double), N*N*N);
 
-    double x_mid, y_mid , z_mid;
+    double x_mid, y_mid, z_mid;
     x_mid = y_mid = z_mid = L/2;
 
 
@@ -116,14 +113,14 @@ int main() {
         }
     }
 
-    for(int i = 0; i < N; i++) {
-        for (int j = 0; j < N ; j++) {
-            for (int k = 0; k < N ; k++) {
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            for (int k = 0; k < N; k++) {
                 double x = (i*dx - L/2);
                 double y = (j*dx - L/2);
                 double z = (k*dx - L/2);
                 double rsqrd = x*x + y*y + z*z;
-                int n = loc(i,j,k,N, N);
+                int n = loc(i, j, k, N, N);
                 if (rsqrd < R*R) {
                     u2[n] = u[n] = -(m/(2*R*R*R))*(3*R*R - rsqrd);
                 } else {
@@ -148,7 +145,7 @@ int main() {
 
 
     save_gird("f.txt", f, N*N*N);
-    save_params("params.txt", 9,(double) N, L, dx, R, dens, a, b, c, (double) N);
+    save_params("params.txt", 9, (double) N, L, dx, R, dens, a, b, c, (double) N);
 
     return 0;
 

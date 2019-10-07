@@ -1,25 +1,30 @@
-#include "solve_block.h"
 #include <stdlib.h>
 #include <math.h>
-#include <string.h>
+#include <assert.h>
+
+int loc(int i, int j, int k, int Ni, int Nj) {
+    assert(i*Ni*Nj + j*Nj + k < Ni*Ni*Ni);
+    return i*Ni*Nj + j*Nj + k;
+}
+
 
 //N is the dim of the input
 void reduce(const double* f_in, double* f_out, int M) {
-    int N = pow(2, M) + 1; // N of the fine grid
-    int Nc = pow(2, M - 1) + 1; //N of the coarse grid
+    int N = (int) pow(2, M) + 1; // N of the fine grid
+    int Nc = (int) pow(2, M - 1) + 1; //N of the coarse grid
     //iterating though all interior points
-    for(int i = 1; i < N-1; i++) {
-        for(int j = 1; j < N-1; j ++) {
-            for(int k = 1; k < N-1; k++) {
+    for (int i = 1; i < N - 1; i++) {
+        for (int j = 1; j < N - 1; j++) {
+            for (int k = 1; k < N - 1; k++) {
                 //taking the
-                f_out[loc(i/2,j/2,k/2, Nc, Nc)] =
+                f_out[loc(i/2, j/2, k/2, Nc, Nc)] =
                         (f_in[loc(i, j, k, N, N)] +
-                        f_in[loc(i + 1, j, k, N, N)] +
-                        f_in[loc(i - 1, j, k, N, N)] +
-                        f_in[loc(i, j + 1, k, N, N)] +
-                        f_in[loc(i, j - 1, k, N, N)] +
-                        f_in[loc(i, j, k + 1, N, N)] +
-                        f_in[loc(i, j, k - 1, N, N)])/7;
+                         f_in[loc(i + 1, j, k, N, N)] +
+                         f_in[loc(i - 1, j, k, N, N)] +
+                         f_in[loc(i, j + 1, k, N, N)] +
+                         f_in[loc(i, j - 1, k, N, N)] +
+                         f_in[loc(i, j, k + 1, N, N)] +
+                         f_in[loc(i, j, k - 1, N, N)])/7;
             }
         }
     }
@@ -31,7 +36,8 @@ void residual(const double* f, const double* u, double* r, int N, double dxs) {
         for (int j = 1; j < N - 1; j++) {
             for (int k = 1; k < N - 1; k++) {
                 int n = loc(i, j, k, N, N);
-                r[n] =  f[n] - (u[n - N*N] + u[n - N] + u[n + 1] + -6*u[n] + u[n - 1] + u[n + N] + u[n + N*N])/dxs;
+                r[n] = f[n] -
+                       (u[n - N*N] + u[n - N] + u[n + 1] + -6*u[n] + u[n - 1] + u[n + N] + u[n + N*N])/dxs;
             }
         }
     }
@@ -84,17 +90,17 @@ void interpolate(const double* f, double* f_out, int m, double dx) {
             //bottom tested to work
             int n = loc(0, i, j, N, N);
             int nc = loc(0, i/2, j/2, Nc, Nc);
-            f_out[loc(0 , i + 2, j + 2, N, N)] =
+            f_out[loc(0, i + 2, j + 2, N, N)] =
                     f[loc(0, i/2 + 1, j/2 + 1, Nc, Nc)];
 
-            f_out[loc(0 , i + 2, j + 1, N, N)] =
-                    f_out[loc(0 , i + 2, j, N, N)]*(1 - dx) + f_out[loc(0 , i + 2, j + 2, N, N)]*dx;
+            f_out[loc(0, i + 2, j + 1, N, N)] =
+                    f_out[loc(0, i + 2, j, N, N)]*(1 - dx) + f_out[loc(0, i + 2, j + 2, N, N)]*dx;
 
-            f_out[loc(0 , i + 1, j + 2, N, N)] =
-                    f_out[loc(0 , i, j + 2, N, N)]*(1 - dx) + f_out[loc(0 , i + 2, j + 2, N, N)]*dx;
+            f_out[loc(0, i + 1, j + 2, N, N)] =
+                    f_out[loc(0, i, j + 2, N, N)]*(1 - dx) + f_out[loc(0, i + 2, j + 2, N, N)]*dx;
 
-            f_out[loc(0 , i + 1, j + 1, N, N)] =
-                    f_out[loc(0 , i + 1, j, N, N)]*(1 - dx) + f_out[loc(0 , i + 1, j + 2, N, N)]*dx;
+            f_out[loc(0, i + 1, j + 1, N, N)] =
+                    f_out[loc(0, i + 1, j, N, N)]*(1 - dx) + f_out[loc(0, i + 1, j + 2, N, N)]*dx;
 
             //back wall working
             f_out[loc(i + 2, 0, j + 2, N, N)] =
@@ -104,7 +110,7 @@ void interpolate(const double* f, double* f_out, int m, double dx) {
                     f_out[loc(i + 2, 0, j, N, N)]*(1 - dx) + f_out[loc(i + 2, 0, j + 2, N, N)]*dx; //top
 
             f_out[loc(i + 1, 0, j + 2, N, N)] =
-                    f_out[loc(i , 0, j + 2, N, N)]*(1 - dx) + f_out[loc(i + 2, 0, j + 2, N, N)]*dx; //right
+                    f_out[loc(i, 0, j + 2, N, N)]*(1 - dx) + f_out[loc(i + 2, 0, j + 2, N, N)]*dx; //right
 
             f_out[loc(i + 1, 0, j + 1, N, N)] =
                     f_out[loc(i, 0, j + 2, N, N)]*(1 - dx) + f_out[loc(i + 2, 0, j + 2, N, N)]*dx;//middle
@@ -139,7 +145,7 @@ void interpolate(const double* f, double* f_out, int m, double dx) {
                 //line parts
                 //top right  working
                 f_out[loc(i + 2, j + 1, k + 2, N, N)] =
-                        f_out[loc(i + 2, j , k + 2, N, N)]*(1 - dx) + f_out[loc(i + 2, j + 2, k + 2, N, N)]*dx;
+                        f_out[loc(i + 2, j, k + 2, N, N)]*(1 - dx) + f_out[loc(i + 2, j + 2, k + 2, N, N)]*dx;
 
                 //top forward working
                 f_out[loc(i + 2, j + 2, k + 1, N, N)] =

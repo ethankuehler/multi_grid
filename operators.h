@@ -5,6 +5,14 @@
 #ifndef C_SOR_3D_OPERATORS_H
 #define C_SOR_3D_OPERATORS_H
 
+/*
+ * function to find index of a vector from three coordinates.
+ * i, j, k are the coordinates
+ * Ni and Nj are the number of girds in the i'tj and j'th dimensions
+ * returns the index of the array that would correspond to the given coordinates
+ */
+int loc(int i, int j, int k, int Ni, int Nj);
+
 //reduce a m sized grid into a m-1 grid. m is that of the fine grid
 void reduce(const double* f_in, double* f_out, int m);
 
