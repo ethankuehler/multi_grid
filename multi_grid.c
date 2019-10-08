@@ -1,7 +1,36 @@
 #include <math.h>
 #include <stdlib.h>
+#include <assert.h>
 #include "solve_block.h"
 #include "operators.h"
+#include "multi_grid.h"
+
+
+N_len coarsen(N_len Nlen) {
+    int i = (Nlen.i+1)/2;
+    int j = (Nlen.k+1)/2;
+    int k = (Nlen.k+1)/2;
+    assert(!(i < 3 || j < 3 || k < 3));
+    return (N_len){i, j, k};
+}
+
+N_len refine(N_len Nlen){
+    return (N_len){Nlen.i*2 - 1, Nlen.j*2 - 1, Nlen.k*2 - 1};
+}
+
+int length(N_len Nlen) {
+    return Nlen.i * Nlen.j * Nlen.k;
+}
+
+char can_coarsen(N_len Nlen) {
+    int i = (Nlen.i-1)/2;
+    int j = (Nlen.k-1)/2;
+    int k = (Nlen.k-1)/2;
+    if (!(i < 3 || j < 3 || k < 3)) {
+        return 1;
+    }
+    return 0;
+}
 
 /* f is the right hand side of the equation
  * u is the output of the function and is the potential
@@ -23,7 +52,8 @@ void multi(double* f, double* u, int m, double dx, double w, int iters) {
         } else {
             solve(f, u, N, N, N, iters, w, dx);
         }
-        restriction(f, u, fc, m, dx*dx);
+        N_len Nlen = (N_len){N, N, N};
+        restriction(f, u, fc, Nlen, dx*dx);
         multi(fc, uc, m - 1, dx*2, w, iters);
         interpolate(uc, d, m - 1, dx);
         for (int i = 0; i < N*N*N; i++) {

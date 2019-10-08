@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <assert.h>
+#include "multi_grid.h"
 
 int loc(int i, int j, int k, int Ni, int Nj) {
     assert(i*Ni*Nj + j*Nj + k < Ni*Ni*Ni);
@@ -9,9 +10,10 @@ int loc(int i, int j, int k, int Ni, int Nj) {
 
 
 //N is the dim of the input
-void reduce(const double* f_in, double* f_out, int M) {
-    int N = (int) pow(2, M) + 1; // N of the fine grid
-    int Nc = (int) pow(2, M - 1) + 1; //N of the coarse grid
+void reduce(const double* f_in, double* f_out, N_len Nlen) {
+    int N = Nlen.i;
+    N_len Nclen = coarsen(Nlen);
+    int Nc = Nclen.i;
     //iterating though all interior points
     for (int i = 1; i < N - 1; i++) {
         for (int j = 1; j < N - 1; j++) {
@@ -30,27 +32,29 @@ void reduce(const double* f_in, double* f_out, int M) {
     }
 }
 
-void residual(const double* f, const double* u, double* r, int N, double dxs) {
+void residual(const double* f, const double* u, double* r, N_len Nlen, double dxs) {
+    int Ni = Nlen.i;
+    int Nj = Nlen.j;
+    int Nk = Nlen.k;
     //because the outer points are fixed by the boundary conditions, their residual is zero.
-    for (int i = 1; i < N - 1; i++) {
-        for (int j = 1; j < N - 1; j++) {
-            for (int k = 1; k < N - 1; k++) {
-                int n = loc(i, j, k, N, N);
+    for (int i = 1; i < Ni - 1; i++) {
+        for (int j = 1; j < Nj - 1; j++) {
+            for (int k = 1; k < Nk - 1; k++) {
+                int n = loc(i, j, k, Ni, Nj);
                 r[n] = f[n] -
-                       (u[n - N*N] + u[n - N] + u[n + 1] + -6*u[n] + u[n - 1] + u[n + N] + u[n + N*N])/dxs;
+                       (u[n - Ni*Nj] + u[n - Nj] + u[n + 1] + -6*u[n] + u[n - 1] + u[n + Nj] + u[n + Ni*Nj])/dxs;
             }
         }
     }
 }
 
-void restriction(const double* f, const double* u, double* f_out, int m, double dxs) {
+void restriction(const double* f, const double* u, double* f_out, N_len Nlen, double dxs) {
     //compute residual
-    int N = (int) pow(2, m) + 1;//dimensions of fine grid
-    double* r = calloc(sizeof(double), N*N*N); //freed at end of function
+    double* r = calloc(sizeof(double), length(Nlen)); //freed at end of function
 
     //compute residual.
-    residual(f, u, r, N, dxs);
-    reduce(r, f_out, m);
+    residual(f, u, r, Nlen, dxs);
+    reduce(r, f_out, Nlen);
     free(r);
 }
 

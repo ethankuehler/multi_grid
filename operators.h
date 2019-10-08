@@ -5,6 +5,8 @@
 #ifndef C_SOR_3D_OPERATORS_H
 #define C_SOR_3D_OPERATORS_H
 
+#include "multi_grid.h"
+
 /*
  * function to find index of a vector from three coordinates.
  * i, j, k are the coordinates
@@ -14,7 +16,7 @@
 int loc(int i, int j, int k, int Ni, int Nj);
 
 //reduce a m sized grid into a m-1 grid. m is that of the fine grid
-void reduce(const double* f_in, double* f_out, int m);
+void reduce(const double* f_in, double* f_out, N_len Nlen);
 
 /*
  * calculates the residual of u
@@ -24,7 +26,7 @@ void reduce(const double* f_in, double* f_out, int m);
  * n is the diemsions
  * dxs is the step size squared
  */
-void residual(const double* f, const double* u, double* r, int N, double dxs);
+void residual(const double* f, const double* u, double* r, N_len Nlen, double dxs);
 
 /*
  * This function calculates the residual of u and then reducing the residual to an m-1 grid
@@ -34,7 +36,7 @@ void residual(const double* f, const double* u, double* r, int N, double dxs);
  * m is that of the fine grid
  * dxs is the step size squared
  */
-void restriction(const double* f, const double* u, double* f_out, int m, double dxs);
+void restriction(const double* f, const double* u, double* f_out, N_len Nlen, double dxs);
 
 /*
  * interpolates the function f into f_out where m is that of the coarse grid.
