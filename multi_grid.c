@@ -40,19 +40,21 @@ char can_coarsen(N_len Nlen) {
 void multi(double* f, double* u, int m, double dx, double w, int iters) {
     int N = (int) pow(2, m) + 1;
     int Nc = (int) pow(2, m - 1) + 1;
+    N_len Nlen = (N_len){N, N, N};
+    N_len Nclen = coarsen(Nlen);
     if (m == 1) {
         int n = 1 + N + N*N;
         u[n] = (1.0/-6.0)*(f[n]*dx - (u[n - N*N] + u[n - N] + u[n + 1] + u[n - 1] + u[n + N] + u[n + N*N]));
     } else {
-        double* fc = calloc(sizeof(double), Nc*Nc*Nc);
-        double* uc = calloc(sizeof(double), Nc*Nc*Nc);
-        double* d = calloc(sizeof(double), N*N*N);
+        double* fc = calloc(sizeof(double), length(Nclen));
+        double* uc = calloc(sizeof(double), length(Nclen));
+        double* d = calloc(sizeof(double), length(Nlen));
         if (m != 8) {
-            solve(f, u, N, N, N, iters, 1, dx);
+            solve(f, u, Nlen, iters, 1, dx);
         } else {
-            solve(f, u, N, N, N, iters, w, dx);
+            solve(f, u, Nlen, iters, w, dx);
         }
-        N_len Nlen = (N_len){N, N, N};
+
         restriction(f, u, fc, Nlen, dx*dx);
         multi(fc, uc, m - 1, dx*2, w, iters);
         interpolate(uc, d, Nlen, dx);
@@ -60,9 +62,9 @@ void multi(double* f, double* u, int m, double dx, double w, int iters) {
             u[i] = u[i] + d[i];
         }
         if (m != 8) {
-            solve(f, u, N, N, N, iters, 1, dx);
+            solve(f, u, Nlen, iters, 1, dx);
         } else {
-            solve(f, u, N, N, N, iters, w, dx);
+            solve(f, u, Nlen, iters, w, dx);
         }
         free(fc);
         free(uc);

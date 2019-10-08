@@ -62,7 +62,6 @@ void restriction(const double* f, const double* u, double* f_out, N_len Nlen, do
 }
 
 
-//the m is that of the coarse grid
 void interpolate(const double* f, double* f_out, N_len Nlen, double dx) {
     N_len Nclen = coarsen(Nlen);
     int Ni = Nlen.i;

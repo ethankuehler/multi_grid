@@ -28,7 +28,7 @@ data2 = data2.reshape(N, N, N)
 plane2 = data2[int(N2 / 2)]
 line2 = plane2[int(N2 / 2)]
 del data2
-del plane2
+
 
 data3 = np.loadtxt('cmake-build-release/data3.txt')
 data3 = data3.reshape(N2, N2, N2)
@@ -36,7 +36,7 @@ data3 = data3.reshape(N2, N2, N2)
 plane3 = data3[int(N2 / 2)]
 line3 = plane3[int(N2 / 2)]
 del data3
-del plane3
+
 # load in density
 # dens_plot = np.loadtxt('cmake-build-release/f.txt')
 # dens_plot = dens_plot.reshape(N, N, N)
@@ -57,11 +57,12 @@ pp.show()
 '''
 pp.pcolor(plane)
 pp.show()
+'''
 pp.pcolor(plane2)
 pp.show()
 pp.pcolor(plane3)
 pp.show()
-'''
+
 # plot density
 # dens_plane = dens_plot[int(N/2)]
 # dens_line = dens_plane[int(N/2)]

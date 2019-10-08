@@ -4,7 +4,10 @@
 #include "operators.h"
 
 
-void method1(double* u, const double* f, int Ni, int Nj, int Nk, double w, double dx) {
+void method1(double* u, const double* f, N_len Nlen, double w, double dx) {
+    int Ni = Nlen.i;
+    int Nj = Nlen.j;
+    int Nk = Nlen.k;
     for (int i = 1; i < Ni - 1; i++) {
         for (int j = 1; j < Nj - 1; j++) {
             for (int k = 1; k < Nk - 1; k++) {
@@ -17,7 +20,10 @@ void method1(double* u, const double* f, int Ni, int Nj, int Nk, double w, doubl
     }
 }
 
-void method2(double* u, const double* f, int Ni, int Nj, int Nk, double w, double dx) {
+void method2(double* u, const double* f, N_len Nlen, double w, double dx) {
+    int Ni = Nlen.i;
+    int Nj = Nlen.j;
+    int Nk = Nlen.k;
     for (int i = Ni - 2; i > 0; i--) {
         for (int j = 1; j < Nj - 1; j++) {
             for (int k = 1; k < Nk - 1; k++) {
@@ -30,7 +36,10 @@ void method2(double* u, const double* f, int Ni, int Nj, int Nk, double w, doubl
     }
 }
 
-void method3(double* u, const double* f, int Ni, int Nj, int Nk, double w, double dx) {
+void method3(double* u, const double* f, N_len Nlen, double w, double dx) {
+    int Ni = Nlen.i;
+    int Nj = Nlen.j;
+    int Nk = Nlen.k;
     for (int i = 1; i < Ni - 1; i++) {
         for (int j = 1; j < Nj - 1; j++) {
             for (int k = Nk - 2; k > 0; k--) {
@@ -43,7 +52,10 @@ void method3(double* u, const double* f, int Ni, int Nj, int Nk, double w, doubl
     }
 }
 
-void method4(double* u, const double* f, int Ni, int Nj, int Nk, double w, double dx) {
+void method4(double* u, const double* f, N_len Nlen, double w, double dx) {
+    int Ni = Nlen.i;
+    int Nj = Nlen.j;
+    int Nk = Nlen.k;
     for (int i = 1; i < Ni - 1; i++) {
         for (int j = Nj - 2; j > 0; j--) {
             for (int k = 1; k < Nk - 1; k++) {
@@ -56,7 +68,10 @@ void method4(double* u, const double* f, int Ni, int Nj, int Nk, double w, doubl
     }
 }
 
-void method5(double* u, const double* f, int Ni, int Nj, int Nk, double w, double dx) {
+void method5(double* u, const double* f, N_len Nlen, double w, double dx) {
+    int Ni = Nlen.i;
+    int Nj = Nlen.j;
+    int Nk = Nlen.k;
     for (int i = 1; i < Ni - 1; i++) {
         for (int j = Nj - 2; j > 0; j--) {
             for (int k = Nk - 2; k > 0; k--) {
@@ -70,7 +85,10 @@ void method5(double* u, const double* f, int Ni, int Nj, int Nk, double w, doubl
 }
 
 
-void method6(double* u, const double* f, int Ni, int Nj, int Nk, double w, double dx) {
+void method6(double* u, const double* f, N_len Nlen, double w, double dx) {
+    int Ni = Nlen.i;
+    int Nj = Nlen.j;
+    int Nk = Nlen.k;
     for (int i = Ni - 2; i > 0; i--) {
         for (int j = Nj - 2; j > 0; j--) {
             for (int k = Nk - 2; k > 0; k--) {
@@ -83,14 +101,14 @@ void method6(double* u, const double* f, int Ni, int Nj, int Nk, double w, doubl
     }
 }
 
-void solve(const double* f, double* u, int Ni, int Nj, int Nk, int iters, double w, double dx) {
+void solve(const double* f, double* u, N_len Nlen, int iters, double w, double dx) {
     dx = dx*dx;
     for (int i = 0; i < iters; i++) {
-        method1(u, f, Ni, Nj, Nk, w, dx);
-        method2(u, f, Ni, Nj, Nk, w, dx);
-        method3(u, f, Ni, Nj, Nk, w, dx);
-        method4(u, f, Ni, Nj, Nk, w, dx);
-        method5(u, f, Ni, Nj, Nk, w, dx);
-        method6(u, f, Ni, Nj, Nk, w, dx);
+        method1(u, f, Nlen, w, dx);
+        method2(u, f, Nlen, w, dx);
+        method3(u, f, Nlen, w, dx);
+        method4(u, f, Nlen, w, dx);
+        method5(u, f, Nlen, w, dx);
+        method6(u, f, Nlen, w, dx);
     }
 }

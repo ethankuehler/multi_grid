@@ -26,7 +26,7 @@ void reduce(const double* f_in, double* f_out, N_len Nlen);
  * n is the diemsions
  * dxs is the step size squared
  */
-void residual(const double* f, const double* u, double* r, N_len Nclen, double dxs);
+void residual(const double* f, const double* u, double* r, N_len Nlen, double dxs);
 
 /*
  * This function calculates the residual of u and then reducing the residual to an m-1 grid
@@ -40,6 +40,8 @@ void restriction(const double* f, const double* u, double* f_out, N_len Nlen, do
 
 /*
  * interpolates the function f into f_out where m is that of the coarse grid.
+ * Nlen is that of the finer grid.
+ * dx is the step size.
  */
 void interpolate(const double* f, double* f_out, N_len Nlen, double dx);
 
