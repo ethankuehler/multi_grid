@@ -1,6 +1,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <stdbool.h>
 #include "solve_block.h"
 #include "operators.h"
 #include "multi_grid.h"
@@ -37,31 +38,30 @@ char can_coarsen(N_len Nlen) {
  * m is the int that determents the dimensions of the input
  * dx is the step size
  */
-void multi(double* f, double* u, int m, double dx, double w, int iters) {
-    int N = (int) pow(2, m) + 1;
-    int Nc = (int) pow(2, m - 1) + 1;
-    N_len Nlen = (N_len){N, N, N};
-    N_len Nclen = coarsen(Nlen);
-    if (m == 1) {
+void multi(double* f, double* u, N_len Nlen, double dx, double w, int iters, char top){
+    
+    if (!can_coarsen(Nlen)) {
+        int N = Nlen.i;
         int n = 1 + N + N*N;
         u[n] = (1.0/-6.0)*(f[n]*dx - (u[n - N*N] + u[n - N] + u[n + 1] + u[n - 1] + u[n + N] + u[n + N*N]));
     } else {
+        N_len Nclen = coarsen(Nlen);
         double* fc = calloc(sizeof(double), length(Nclen));
         double* uc = calloc(sizeof(double), length(Nclen));
         double* d = calloc(sizeof(double), length(Nlen));
-        if (m != 8) {
+        if (top == true) {
             solve(f, u, Nlen, iters, 1, dx);
         } else {
             solve(f, u, Nlen, iters, w, dx);
         }
 
         restriction(f, u, fc, Nlen, dx*dx);
-        multi(fc, uc, m - 1, dx*2, w, iters);
+        multi(fc, uc, Nclen, dx*2, w, iters, false);
         interpolate(uc, d, Nlen, dx);
-        for (int i = 0; i < N*N*N; i++) {
+        for (int i = 0; i < length(Nlen); i++) {
             u[i] = u[i] + d[i];
         }
-        if (m != 8) {
+        if (top == true) {
             solve(f, u, Nlen, iters, 1, dx);
         } else {
             solve(f, u, Nlen, iters, w, dx);
