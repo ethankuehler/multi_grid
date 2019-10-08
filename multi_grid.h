@@ -16,7 +16,7 @@ N_len refine(N_len Nlen);
 int length(N_len Nlen);
 char can_coarsen(N_len Nlen);
 
-void multi(double* f, double* u, int m, double dx, double w, int iters);
+void multi(double* f, double* u, N_len Nlen, double dx, double w, int iters, char top);
 
 
 #endif //C_SOR_3D_MULTI_GRID_H

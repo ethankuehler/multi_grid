@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <stdarg.h>
+#include <stdbool.h>
 #include "solve_block.h"
 #include "operators.h"
 #include "multi_grid.h"
@@ -42,7 +43,7 @@ int main() {
     int M = 8;
     int N = (int) pow(2, M) + 1;
     int N2 = (int) pow(2, M - 1) + 1;
-    int iters = 3;
+    int iters = 5;
     double w = 1.98;
     double L = 20;
     double dx = L/N;
@@ -136,7 +137,8 @@ int main() {
     //solve(f, u, N, N, N, iters*2, w, dx);
     //save_gird("data2.txt", u, N*N*N);
 
-    multi(f, u2, M, dx, w, iters);
+    N_len Nlen = (N_len){N, N, N};
+    multi(f, u2, Nlen, dx, w, iters, true);
     save_gird("data3.txt", u2, N*N*N);
 
     //restriction(f, u, u2, M, dx*dx);
