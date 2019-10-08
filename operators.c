@@ -11,22 +11,25 @@ int loc(int i, int j, int k, int Ni, int Nj) {
 
 //N is the dim of the input
 void reduce(const double* f_in, double* f_out, N_len Nlen) {
-    int N = Nlen.i;
     N_len Nclen = coarsen(Nlen);
-    int Nc = Nclen.i;
+    int Ni = Nlen.i;
+    int Nj = Nlen.j;
+    int Nk = Nlen.k;
+    int Nci = Nclen.i;
+    int Ncj = Nclen.j;
     //iterating though all interior points
-    for (int i = 1; i < N - 1; i++) {
-        for (int j = 1; j < N - 1; j++) {
-            for (int k = 1; k < N - 1; k++) {
+    for (int i = 1; i < Ni - 1; i++) {
+        for (int j = 1; j < Nj - 1; j++) {
+            for (int k = 1; k < Nk - 1; k++) {
                 //taking the
-                f_out[loc(i/2, j/2, k/2, Nc, Nc)] =
-                        (f_in[loc(i, j, k, N, N)] +
-                         f_in[loc(i + 1, j, k, N, N)] +
-                         f_in[loc(i - 1, j, k, N, N)] +
-                         f_in[loc(i, j + 1, k, N, N)] +
-                         f_in[loc(i, j - 1, k, N, N)] +
-                         f_in[loc(i, j, k + 1, N, N)] +
-                         f_in[loc(i, j, k - 1, N, N)])/7;
+                f_out[loc(i/2, j/2, k/2, Nci, Ncj)] =
+                        (f_in[loc(i, j, k, Ni, Nj)] +
+                         f_in[loc(i + 1, j, k, Ni, Nj)] +
+                         f_in[loc(i - 1, j, k, Ni, Nj)] +
+                         f_in[loc(i, j + 1, k, Ni, Nj)] +
+                         f_in[loc(i, j - 1, k, Ni, Nj)] +
+                         f_in[loc(i, j, k + 1, Ni, Nj)] +
+                         f_in[loc(i, j, k - 1, Ni, Nj)])/7;
             }
         }
     }
@@ -60,121 +63,53 @@ void restriction(const double* f, const double* u, double* f_out, N_len Nlen, do
 
 
 //the m is that of the coarse grid
-void interpolate(const double* f, double* f_out, int m, double dx) {
-    int N = (int) pow(2, m + 1) + 1;//dimensions of fine grid
-    int Nc = (int) pow(2, m) + 1;//dimensions of coarse grid
-
-    //setting up the bottom back left corner.
-    f_out[0] = f[0];
-
-    //doing back and left edge of bottom and the left edge of the back wall.
-    for (int i = 0; i < N - 2; i += 2) {
-        int n = loc(0, 0, i, N, N);
-        int nc = loc(0, 0, i/2, Nc, Nc);
-        //back works
-        f_out[n + 2] = f[nc + 1];
-        f_out[n + 1] = f_out[n]*(1 - dx) + f_out[n + 2]*dx;
-
-        //left works
-        n = loc(0, i, 0, N, N);
-        nc = loc(0, i/2, 0, Nc, Nc);
-        f_out[n + 2*N] = f[nc + N];
-        f_out[n + N] = f_out[n + 2*N]*(1 - dx) + f_out[n]*dx;
-
-        //up works
-        n = loc(i, 0, 0, N, N);
-        nc = loc(i/2, 0, 0, Nc, Nc);
-        f_out[n + 2*N*N] = f[nc + Nc*Nc];
-        f_out[n + N*N] = f_out[n]*(1 - dx) + f_out[n + 2*N*N]*dx;
-    }
-    //doing bottom left and back wall
-    for (int i = 0; i < N - 2; i += 2) {
-        for (int j = 0; j < N - 2; j += 2) {
-
-            //bottom tested to work
-            int n = loc(0, i, j, N, N);
-            int nc = loc(0, i/2, j/2, Nc, Nc);
-            f_out[loc(0, i + 2, j + 2, N, N)] =
-                    f[loc(0, i/2 + 1, j/2 + 1, Nc, Nc)];
-
-            f_out[loc(0, i + 2, j + 1, N, N)] =
-                    f_out[loc(0, i + 2, j, N, N)]*(1 - dx) + f_out[loc(0, i + 2, j + 2, N, N)]*dx;
-
-            f_out[loc(0, i + 1, j + 2, N, N)] =
-                    f_out[loc(0, i, j + 2, N, N)]*(1 - dx) + f_out[loc(0, i + 2, j + 2, N, N)]*dx;
-
-            f_out[loc(0, i + 1, j + 1, N, N)] =
-                    f_out[loc(0, i + 1, j, N, N)]*(1 - dx) + f_out[loc(0, i + 1, j + 2, N, N)]*dx;
-
-            //back wall working
-            f_out[loc(i + 2, 0, j + 2, N, N)] =
-                    f[loc(i/2 + 1, 0, j/2 + 1, Nc, Nc)]; //top right
-
-            f_out[loc(i + 2, 0, j + 1, N, N)] =
-                    f_out[loc(i + 2, 0, j, N, N)]*(1 - dx) + f_out[loc(i + 2, 0, j + 2, N, N)]*dx; //top
-
-            f_out[loc(i + 1, 0, j + 2, N, N)] =
-                    f_out[loc(i, 0, j + 2, N, N)]*(1 - dx) + f_out[loc(i + 2, 0, j + 2, N, N)]*dx; //right
-
-            f_out[loc(i + 1, 0, j + 1, N, N)] =
-                    f_out[loc(i, 0, j + 2, N, N)]*(1 - dx) + f_out[loc(i + 2, 0, j + 2, N, N)]*dx;//middle
-
-            //left wall //ending issue
-            n = loc(i, j, 0, N, N);
-            nc = loc(i/2, j/2, 0, Nc, Nc);
-            f_out[loc(i + 2, j + 2, 0, N, N)] =
-                    f[loc(i/2 + 1, j/2 + 1, 0, Nc, Nc)]; //foward top
-
-            f_out[loc(i + 2, j + 1, 0, N, N)] =
-                    f_out[loc(i + 2, j, 0, N, N)]*(1 - dx) + f_out[loc(i + 2, j + 2, 0, N, N)]*dx;//top
-
-            f_out[loc(i + 1, j + 2, 0, N, N)] =
-                    f_out[loc(i, j + 2, 0, N, N)]*(1 - dx) + f_out[loc(i + 2, j + 2, 0, N, N)]*dx; //foward
-
-            f_out[loc(i + 1, j + 1, 0, N, N)] =
-                    f_out[loc(i, j + 2, 0, N, N)]*(1 - dx) + f_out[loc(i + 2, j + 2, 0, N, N)]*dx;//middle
-        }
-    }
-
+void interpolate(const double* f, double* f_out, N_len Nlen, double dx) {
+    N_len Nclen = coarsen(Nlen);
+    int Ni = Nlen.i;
+    int Nj = Nlen.j;
+    int Nk = Nlen.k;
+    int Nci = Nclen.i;
+    int Ncj = Nclen.j;
     //middle area and other walls.
-    for (int i = 0; i < N - 2; i += 2) {
-        for (int j = 0; j < N - 2; j += 2) {
-            for (int k = 0; k < N - 2; k += 2) {
-                int n = loc(i, j, k, N, N);
-                int nc = loc(i/2, j/2, k/2, Nc, Nc);
+    //we only need to do the interior areas as their should be zero
+    for (int i = 0; i < Ni - 2; i += 2) {
+        for (int j = 0; j < Nj - 2; j += 2) {
+            for (int k = 0; k < Nk - 2; k += 2) {
+                int n = loc(i, j, k, Ni, Ni);
+                int nc = loc(i/2, j/2, k/2, Nci, Nci);
 
                 //last corner works
-                f_out[loc(i + 2, j + 2, k + 2, N, N)] = f[loc(i/2 + 1, j/2 + 1, k/2 + 1, Nc, Nc)];
+                f_out[loc(i + 2, j + 2, k + 2, Ni, Nj)] = f[loc(i/2 + 1, j/2 + 1, k/2 + 1, Ncj, Ncj)];
 
                 //line parts
                 //top right  working
-                f_out[loc(i + 2, j + 1, k + 2, N, N)] =
-                        f_out[loc(i + 2, j, k + 2, N, N)]*(1 - dx) + f_out[loc(i + 2, j + 2, k + 2, N, N)]*dx;
+                f_out[loc(i + 2, j + 1, k + 2, Ni, Nj)] =
+                        f_out[loc(i + 2, j, k + 2, Ni, Nj)]*(1 - dx) + f_out[loc(i + 2, j + 2, k + 2, Ni, Nj)]*dx;
 
                 //top forward working
-                f_out[loc(i + 2, j + 2, k + 1, N, N)] =
-                        f_out[loc(i + 2, j + 2, k, N, N)]*(1 - dx) + f_out[loc(i + 2, j + 2, k + 2, N, N)]*dx;
+                f_out[loc(i + 2, j + 2, k + 1, Ni, Nj)] =
+                        f_out[loc(i + 2, j + 2, k, Ni, Nj)]*(1 - dx) + f_out[loc(i + 2, j + 2, k + 2, Ni, Nj)]*dx;
 
                 //forward right working
-                f_out[loc(i + 1, j + 2, k + 2, N, N)] =
-                        f_out[loc(i, j + 2, k + 2, N, N)]*(1 - dx) + f_out[loc(i + 2, j + 2, k + 2, N, N)]*dx;
+                f_out[loc(i + 1, j + 2, k + 2, Ni, Nj)] =
+                        f_out[loc(i, j + 2, k + 2, Ni, Nj)]*(1 - dx) + f_out[loc(i + 2, j + 2, k + 2, Ni, Nj)]*dx;
 
                 //center of walls
                 //right working
-                f_out[loc(i + 1, j + 1, k + 2, N, N)] =
-                        f_out[loc(i + 1, j, k + 2, N, N)]*(1 - dx) + f_out[loc(i + 1, j + 2, k + 2, N, N)]*dx;
+                f_out[loc(i + 1, j + 1, k + 2, Ni, Nj)] =
+                        f_out[loc(i + 1, j, k + 2, Ni, Nj)]*(1 - dx) + f_out[loc(i + 1, j + 2, k + 2, Ni, Nj)]*dx;
 
                 // forward working
-                f_out[loc(i + 1, j + 2, k + 1, N, N)] =
-                        f_out[loc(i + 1, j + 2, k, N, N)]*(1 - dx) + f_out[loc(i + 1, j + 2, k + 2, N, N)]*dx;
+                f_out[loc(i + 1, j + 2, k + 1, Ni, Nj)] =
+                        f_out[loc(i + 1, j + 2, k, Ni, Nj)]*(1 - dx) + f_out[loc(i + 1, j + 2, k + 2, Ni, Nj)]*dx;
 
                 // top
-                f_out[loc(i + 2, j + 1, k + 1, N, N)] =
-                        f_out[loc(i + 2, j + 1, k, N, N)]*(1 - dx) + f_out[loc(i + 2, j + 1, k + 2, N, N)]*dx;
+                f_out[loc(i + 2, j + 1, k + 1, Ni, Nj)] =
+                        f_out[loc(i + 2, j + 1, k, Ni, Nj)]*(1 - dx) + f_out[loc(i + 2, j + 1, k + 2, Ni, Nj)]*dx;
 
                 //middle point working
-                f_out[loc(i + 1, j + 1, k + 1, N, N)] =
-                        f_out[loc(i + 1, j + 1, k, N, N)]*(1 - dx) + f_out[loc(i + 1, j + 1, k + 2, N, N)]*dx;
+                f_out[loc(i + 1, j + 1, k + 1, Ni, Nj)] =
+                        f_out[loc(i + 1, j + 1, k, Ni, Nj)]*(1 - dx) + f_out[loc(i + 1, j + 1, k + 2, Ni, Nj)]*dx;
             }
         }
     }

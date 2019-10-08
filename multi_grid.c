@@ -55,7 +55,7 @@ void multi(double* f, double* u, int m, double dx, double w, int iters) {
         N_len Nlen = (N_len){N, N, N};
         restriction(f, u, fc, Nlen, dx*dx);
         multi(fc, uc, m - 1, dx*2, w, iters);
-        interpolate(uc, d, m - 1, dx);
+        interpolate(uc, d, Nlen, dx);
         for (int i = 0; i < N*N*N; i++) {
             u[i] = u[i] + d[i];
         }
