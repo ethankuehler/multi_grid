@@ -41,9 +41,9 @@ void save_gird(const char* str, double* vec, int length) {
 
 int main() {
     int M = 8;
-    int N = (int) pow(2, M) + 1;
+    int N = 301;
     int N2 = (int) pow(2, M - 1) + 1;
-    int iters = 5;
+    int iters = 2;
     double w = 1.98;
     double L = 20;
     double dx = L/N;
@@ -131,11 +131,12 @@ int main() {
         }
     }
 
-
+    //solve(f, u, (N_len){N, N, N}, 100, w, dx);
+    //save_gird("data.txt", u, N*N*N);
 
     //printf("number of iters: %d\n", iters*6);
-    //solve(f, u, N, N, N, iters*2, w, dx);
-    //save_gird("data2.txt", u, N*N*N);
+    solve(f, u, (N_len){N, N, N}, iters*2, w, dx);
+    save_gird("data2.txt", u, N*N*N);
 
     N_len Nlen = (N_len){N, N, N};
     multi(f, u2, Nlen, dx, w, iters, true);

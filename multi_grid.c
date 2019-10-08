@@ -24,9 +24,9 @@ int length(N_len Nlen) {
 }
 
 char can_coarsen(N_len Nlen) {
-    int i = (Nlen.i-1)/2;
-    int j = (Nlen.k-1)/2;
-    int k = (Nlen.k-1)/2;
+    int i = (Nlen.i+1)/2;
+    int j = (Nlen.k+1)/2;
+    int k = (Nlen.k+1)/2;
     if (!(i < 3 || j < 3 || k < 3)) {
         return 1;
     }
@@ -41,15 +41,13 @@ char can_coarsen(N_len Nlen) {
 void multi(double* f, double* u, N_len Nlen, double dx, double w, int iters, char top){
     
     if (!can_coarsen(Nlen)) {
-        int N = Nlen.i;
-        int n = 1 + N + N*N;
-        u[n] = (1.0/-6.0)*(f[n]*dx - (u[n - N*N] + u[n - N] + u[n + 1] + u[n - 1] + u[n + N] + u[n + N*N]));
+        solve(f, u, Nlen, iters, 1, dx);
     } else {
         N_len Nclen = coarsen(Nlen);
         double* fc = calloc(sizeof(double), length(Nclen));
         double* uc = calloc(sizeof(double), length(Nclen));
         double* d = calloc(sizeof(double), length(Nlen));
-        if (top == true) {
+        if (top != true) {
             solve(f, u, Nlen, iters, 1, dx);
         } else {
             solve(f, u, Nlen, iters, w, dx);
@@ -61,7 +59,7 @@ void multi(double* f, double* u, N_len Nlen, double dx, double w, int iters, cha
         for (int i = 0; i < length(Nlen); i++) {
             u[i] = u[i] + d[i];
         }
-        if (top == true) {
+        if (top != true) {
             solve(f, u, Nlen, iters, 1, dx);
         } else {
             solve(f, u, Nlen, iters, w, dx);

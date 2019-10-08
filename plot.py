@@ -15,6 +15,7 @@ N2 = int(params[8])
 
 m = (4.0 / 3.0) * np.pi * a * b * c * dens
 # load in data
+
 data = np.loadtxt('cmake-build-release/data.txt')
 data = data.reshape(N, N, N)
 
@@ -22,6 +23,7 @@ plane = data[int(N / 2)]
 line = plane[int(N / 2)]
 del data
 del plane
+
 data2 = np.loadtxt('cmake-build-release/data2.txt')
 data2 = data2.reshape(N, N, N)
 
@@ -50,8 +52,8 @@ y = -m * (3 * R ** 2 - x ** 2) / (2 * R ** 3)
 y[x < -a] = m / x[x < -a]
 y[x > a] = -m / x[x > a]
 # pp.plot(x, y, color='g')
-pp.plot(x, line, color='b')
-pp.plot(x, line2, color='r')
+pp.plot(x2, line, color='b')
+pp.plot(x2, line2, color='r')
 pp.plot(x2, line3, color='g')
 pp.show()
 '''
