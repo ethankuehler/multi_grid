@@ -13,7 +13,7 @@ void func(double* u, int i, int j, int k, double L, int N, double m, double dx) 
     double y = pow((j*dx - L/2), 2);
     double z = pow((k*dx - L/2), 2);
     double rsqrd = x + y + z;
-    int n = loc(i, j, k, N, N);
+    int n = loc(i, j, k, (N_len){N, N, N});
     u[n] = -m/sqrt(rsqrd);
 }
 
@@ -41,7 +41,7 @@ void save_gird(const char* str, double* vec, int length) {
 
 int main() {
     int M = 8;
-    int N = 301;
+    int N = 257;
     int N2 = (int) pow(2, M - 1) + 1;
     int iters = 2;
     double w = 1.98;
@@ -69,7 +69,7 @@ int main() {
                 double y = (j*dx - (y_mid));
                 double z = (k*dx - (z_mid - 3));
                 double rsqrd = (1/(a*a))*x*x + (1/(b*b))*y*y + (1/(c*c))*z*z;
-                int n = loc(i, j, k, N, N);
+                int n = loc(i, j, k, (N_len){N, N, N});
                 if (rsqrd < 1) {
                     f[n] = M_PI*4*dens;
                 } else {
@@ -87,7 +87,7 @@ int main() {
                 double y = (j*dx - (y_mid));
                 double z = (k*dx - (z_mid + 3));
                 double rsqrd = (1/(a*a))*x*x + (1/(b*b))*y*y + (1/(c*c))*z*z;
-                int n = loc(i, j, k, N, N);
+                int n = loc(i, j, k, (N_len){N, N, N});
                 if (rsqrd < 1) {
                     f[n] = M_PI*4*dens;
                 }
@@ -121,7 +121,7 @@ int main() {
                 double y = (j*dx - L/2);
                 double z = (k*dx - L/2);
                 double rsqrd = x*x + y*y + z*z;
-                int n = loc(i, j, k, N, N);
+                int n = loc(i, j, k, (N_len){N, N, N});
                 if (rsqrd < R*R) {
                     u2[n] = u[n] = -(m/(2*R*R*R))*(3*R*R - rsqrd);
                 } else {

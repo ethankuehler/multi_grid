@@ -13,7 +13,7 @@
  * Ni and Nj are the number of girds in the i'tj and j'th dimensions
  * returns the index of the array that would correspond to the given coordinates
  */
-int loc(int i, int j, int k, int Ni, int Nj);
+int loc(int i, int j, int k, N_len Nlen);
 
 //reduce a m sized grid into a m-1 grid. m is that of the fine grid
 void reduce(const double* f_in, double* f_out, N_len Nlen);
