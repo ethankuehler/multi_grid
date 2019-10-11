@@ -44,7 +44,7 @@ void multi(double* f, double* u, N_len Nlen, double dx, double w, int iters, cha
         double* uc = calloc(sizeof(double), length(Nclen));
         double* d = calloc(sizeof(double), length(Nlen));
         if (top != true) {
-            solve(f, u, Nlen, iters, 1, dx);
+            solve(f, u, Nlen, 2, 1, dx);
         } else {
             solve(f, u, Nlen, iters, w, dx);
         }
@@ -56,7 +56,7 @@ void multi(double* f, double* u, N_len Nlen, double dx, double w, int iters, cha
             u[i] = u[i] + d[i];
         }
         if (top != true) {
-            solve(f, u, Nlen, iters, 1, dx);
+            solve(f, u, Nlen, 2, 1, dx);
         } else {
             solve(f, u, Nlen, iters, w, dx);
         }

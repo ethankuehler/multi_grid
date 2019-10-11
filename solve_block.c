@@ -105,10 +105,10 @@ void solve(const double* f, double* u, N_len Nlen, int iters, double w, double d
     dx = dx*dx;
     for (int i = 0; i < iters; i++) {
         method1(u, f, Nlen, w, dx);
-        method2(u, f, Nlen, w, dx);
-        method3(u, f, Nlen, w, dx);
-        method4(u, f, Nlen, w, dx);
-        method5(u, f, Nlen, w, dx);
-        method6(u, f, Nlen, w, dx);
+        //method2(u, f, Nlen, w, dx);
+        //method3(u, f, Nlen, w, dx);
+        //method4(u, f, Nlen, w, dx);
+        //method5(u, f, Nlen, w, dx);
+        //method6(u, f, Nlen, w, dx);
     }
 }
