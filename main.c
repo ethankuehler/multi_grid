@@ -5,8 +5,9 @@
 #include <stdbool.h>
 #include <string.h>
 #include "solve_block.h"
-#include "operators.h"
+#include "helpers/operators.h"
 #include "multi_grid.h"
+#include "helpers/solve_thread.h"
 #include <time.h>
 
 void func(double* u, int i, int j, int k, double L, int N, double m, double dx) {
@@ -239,7 +240,7 @@ int main() {
 
     N_len Nlen = (N_len){N, N, N};
     clock_t start = clock();
-    multi(f, u2, Nlen, dx, w, iters, true);
+    multi(f, u2, (N_len){N, N, N},dx, w, iters, true);
     clock_t end = clock();
     double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
     printf("Time taken for multi: %f seconds \n", cpu_time_used);

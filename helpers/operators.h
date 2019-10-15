@@ -1,11 +1,7 @@
-//
-// Created by dcrush on 9/27/19.
-//
-
 #ifndef C_SOR_3D_OPERATORS_H
 #define C_SOR_3D_OPERATORS_H
 
-#include "multi_grid.h"
+#include "N_len.h"
 
 /*
  * function to find index of a vector from three coordinates.

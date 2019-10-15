@@ -1,7 +1,8 @@
 #include <stdlib.h>
 #include <math.h>
 #include <assert.h>
-#include "multi_grid.h"
+#include "N_len.h"
+
 
 int loc(int i, int j, int k, N_len Nlen) {
     int Ni = Nlen.i;

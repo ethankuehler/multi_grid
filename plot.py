@@ -54,20 +54,20 @@ x2 = np.linspace(-L / 2, L / 2, N2)
 y = -m * (3 * R ** 2 - x ** 2) / (2 * R ** 3)
 y[x < -a] = m / x[x < -a]
 y[x > a] = -m / x[x > a]
-pp.xlim(-1, 1)
-pp.plot(x, y, 'm')
-pp.plot(x2, line, 'b')
+#pp.xlim(-1, 1)
+#pp.plot(x, y, 'm')
+#pp.plot(x2, line, 'b')
 pp.plot(x2, line2, 'r')
 pp.plot(x2, line3, 'g')
 pp.show()
-"""
+'''
 pp.pcolor(plane)
 pp.show()
 pp.pcolor(plane2)
 pp.show()
 pp.pcolor(plane3)
 pp.show()
-"""
+'''
 # plot density
 # dens_plane = dens_plot[int(N/2)]
 # dens_line = dens_plane[int(N/2)]

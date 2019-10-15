@@ -2,32 +2,12 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include "solve_block.h"
-#include "operators.h"
+#include "helpers/operators.h"
 #include "multi_grid.h"
+#include "helpers/solve_thread.h"
 
-
-N_len coarsen(N_len Nlen) {
-    int i = (Nlen.i+1)/2;
-    int j = (Nlen.k+1)/2;
-    int k = (Nlen.k+1)/2;
-    assert(!(i < 3 || j < 3 || k < 3));
-    return (N_len){i, j, k};
-}
-
-int length(N_len Nlen) {
-    return Nlen.i * Nlen.j * Nlen.k;
-}
-
-char can_coarsen(N_len Nlen) {
-    int i = (Nlen.i+1)/2;
-    int j = (Nlen.k+1)/2;
-    int k = (Nlen.k+1)/2;
-    if (!(i < 3 || j < 3 || k < 3)) {
-        return true;
-    }
-    return false;
-}
 
 /* f is the right hand side of the equation
  * u is the output of the function and is the potential
@@ -44,7 +24,7 @@ void multi(double* f, double* u, N_len Nlen, double dx, double w, int iters, cha
         double* uc = calloc(sizeof(double), length(Nclen));
         double* d = calloc(sizeof(double), length(Nlen));
         if (top != true) {
-            solve(f, u, Nlen, 2, 1, dx);
+            solve(f, u, Nlen, 1, 1, dx);
         } else {
             solve(f, u, Nlen, iters, w, dx);
         }
@@ -56,7 +36,7 @@ void multi(double* f, double* u, N_len Nlen, double dx, double w, int iters, cha
             u[i] = u[i] + d[i];
         }
         if (top != true) {
-            solve(f, u, Nlen, 2, 1, dx);
+            solve(f, u, Nlen, 1, 1, dx);
         } else {
             solve(f, u, Nlen, iters, w, dx);
         }
