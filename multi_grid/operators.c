@@ -83,7 +83,7 @@ void residual(const double* f, const double* u, double* r, N_len Nlen, double dx
             for (int k = 1; k < Nk - 1; k++) {
                 int n = loc(i, j, k, Nlen);
                 r[n] = f[n] -
-                       (u[n - Ni*Nj] + u[n - Nj] + u[n + 1] + -6*u[n] + u[n - 1] + u[n + Nj] + u[n + Ni*Nj])/dxs;
+                       (u[n - Ni*Nj] + u[n - Nj] + u[n - 1] + -6*u[n] + u[n + 1] + u[n + Nj] + u[n + Ni*Nj])/dxs;
             }
         }
     }
