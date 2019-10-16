@@ -1,18 +1,23 @@
-//
-// Created by dcrush on 10/3/19.
-//
 
 #ifndef C_SOR_3D_MULTI_GRID_H
 #define C_SOR_3D_MULTI_GRID_H
 
 #include <stdbool.h>
 
+
+//This struct is used to store the number of girds in each dimensions for a gird.
 typedef struct _N_len {
     int i;
     int j;
     int k;
 } N_len;
 
+/*
+ * This struct is used to store solver used in multi grid.
+ * solve_top is used on the finest grid.
+ * solve_coarse is used on all the coarser gird excepted the coarsest.
+ * solve_base is used on the coarsest gird.
+ */
 typedef struct _funcs_args {
     void (*solve_top)(const double*, double*, N_len, double);
     void (*solve_coarse)(const double*, double*, N_len, double);

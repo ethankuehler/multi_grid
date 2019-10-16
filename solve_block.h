@@ -1,7 +1,3 @@
-//
-// Created by ethan kueher on 9/26/19.
-//
-
 #ifndef C_SOR_3D_SOLVE_BLOCK_H
 #define C_SOR_3D_SOLVE_BLOCK_H
 

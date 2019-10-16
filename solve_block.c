@@ -1,6 +1,4 @@
-//
-// Created by dcrush on 9/26/19.
-//
+
 #include "multi_grid/operators.h"
 
 
