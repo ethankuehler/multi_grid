@@ -1,7 +1,7 @@
 //
 // Created by dcrush on 9/26/19.
 //
-#include "operators.h"
+#include "multi_grid/operators.h"
 
 
 void method1(double* u, const double* f, N_len Nlen, double w, double dx) {

@@ -5,8 +5,8 @@
 #include <stdbool.h>
 #include <string.h>
 #include "solve_block.h"
-#include "operators.h"
-#include "multi_grid.h"
+#include "multi_grid/operators.h"
+#include "multi_grid/multi_grid.h"
 #include <time.h>
 
 void func(double* u, int i, int j, int k, double L, int N, double m, double dx) {
@@ -58,7 +58,7 @@ double L2(double* f, double* u, N_len Nlen, double dx) {
         sum += pow(r[i],2);
     }
     free(r);
-    return pow(sum, 1/2)/length(Nlen);
+    return pow(sum, 1.0/2.0)/length(Nlen);
 }
 
 double avg_diff(const double* f1, const double* f2, N_len Nlen) {
@@ -69,15 +69,15 @@ double avg_diff(const double* f1, const double* f2, N_len Nlen) {
     return sum/length(Nlen);
 }
 
-typedef struct _fuck {
+typedef struct _location_value {
     int i;
     int j;
     int k;
     double f;
-}fuck;
+}location_value;
 
-fuck max_diff(const double* f1, const double* f2, N_len Nlen) {
-    fuck max = (fuck){0,0,0,0};
+location_value max_diff(const double* f1, const double* f2, N_len Nlen) {
+    location_value max = (location_value){0, 0, 0, 0};
     int Ni = Nlen.i;
     int Nj = Nlen.j;
     int Nk = Nlen.k;
@@ -99,6 +99,19 @@ fuck max_diff(const double* f1, const double* f2, N_len Nlen) {
     }
     return max;
 }
+
+void solve_top(const double* f, double* u, N_len Nlen, double dx) {
+    solve(f, u, Nlen, 5, 1.9, dx);
+}
+
+void solve_coarse(const double* f, double* u, N_len Nlen, double dx) {
+    solve(f, u, Nlen, 2, 1, dx);
+}
+
+void solve_base(const double* f, double* u, N_len Nlen, double dx) {
+    solve(f, u, Nlen, 1, 1, dx);
+}
+
 
 
 int main() {
@@ -167,6 +180,7 @@ int main() {
         }
     }
     */
+
 
 
 
@@ -239,7 +253,8 @@ int main() {
 
     N_len Nlen = (N_len){N, N, N};
     clock_t start = clock();
-    multi(f, u2, Nlen, dx, w, iters, true);
+    funcs_args arg = (funcs_args){solve_top, solve_coarse, solve_base};
+    multi(f, u2, Nlen, dx, arg, true);
     clock_t end = clock();
     double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
     printf("Time taken for multi: %f seconds \n", cpu_time_used);
@@ -249,7 +264,7 @@ int main() {
     printf("error for SOR :%lf\n", L2(f, u, Nlen,dx));
     printf("avg diff :%f\n", avg_diff(u, u2, Nlen));
 
-    fuck bruh = max_diff(u, u2, Nlen);
+    location_value bruh = max_diff(u, u2, Nlen);
     //save_line("line.txt", u, bruh.i, bruh.k, Nlen);
     //save_line("line3.txt", u2, bruh.i, bruh.k, Nlen);
 

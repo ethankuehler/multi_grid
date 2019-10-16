@@ -1,30 +1,37 @@
-//
-// Created by dcrush on 9/27/19.
-//
-
 #ifndef C_SOR_3D_OPERATORS_H
 #define C_SOR_3D_OPERATORS_H
 
 #include "multi_grid.h"
+#include <stdbool.h>
+
+// Takes a N_len can calculates the N_len for a coarsened grid, smallest length must be greater then three.
+N_len coarsen(N_len Nlen);
+
+// returns true if grid can be coarsened
+bool can_coarsen(N_len Nlen);
+
+//returns the gird array length with diemsions Nlen.
+int length(N_len Nlen);
 
 /*
- * function to find index of a vector from three coordinates.
- * i, j, k are the coordinates
- * Ni and Nj are the number of girds in the i'tj and j'th dimensions
+ * function returns index to point on gird.
+ * i, j, k are the coordinates of the point.
+ * Nlen is the grid diemsions.
  * returns the index of the array that would correspond to the given coordinates
  */
 int loc(int i, int j, int k, N_len Nlen);
 
-//reduce a m sized grid into a m-1 grid. m is that of the fine grid
+//f_in is the fine grid, f_out is the coarse grid, Nlen is that of the fine gird.
+//take a fine grind and avenges it to the coarse gird.
 void reduce(const double* f_in, double* f_out, N_len Nlen);
 
 /*
- * calculates the residual of u
- * f is the right hand side of the dif eq
- * u is the approximate solution of the dif eq
- * r is the output
- * n is the diemsions
- * dxs is the step size squared
+ * calculates the residual of u.
+ * f is the right hand side of the dif eq.
+ * u is the approximate solution of the dif eq.
+ * r is the output.
+ * Nlen is the dimension of the gird.
+ * dxs is the step size squared.
  */
 void residual(const double* f, const double* u, double* r, N_len Nlen, double dxs);
 
@@ -33,7 +40,7 @@ void residual(const double* f, const double* u, double* r, N_len Nlen, double dx
  * f is the right hand side of the dif eq
  * u is the approximate solution
  * f_out is the output
- * m is that of the fine grid
+ * Nlen is the dimension of the fine gird.
  * dxs is the step size squared
  */
 void restriction(const double* f, const double* u, double* f_out, N_len Nlen, double dxs);
