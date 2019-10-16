@@ -116,14 +116,12 @@ void interpolate(const double* f, double* f_out, N_len Nlen, double dx) {
     N_len Nclen = coarsen(Nlen);
     int Ni = Nlen.i;
     int Nj = Nlen.j;
-    int Nk = Nlen.k;;
+    int Nk = Nlen.k;
     //middle area and other walls.
     //we only need to do the interior areas as their should be zero
     for (int i = 0; i < Ni - 2; i += 2) {
         for (int j = 0; j < Nj - 2; j += 2) {
             for (int k = 0; k < Nk - 2; k += 2) {
-                int n = loc(i, j, k, Nlen);
-                int nc = loc(i/2, j/2, k/2, Nclen);
 
                 //last corner
                 f_out[loc(i + 2, j + 2, k + 2, Nlen)] = f[loc(i/2 + 1, j/2 + 1, k/2 + 1, Nclen)];
