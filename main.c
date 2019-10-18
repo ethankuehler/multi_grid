@@ -105,7 +105,7 @@ void solve_top(const double* f, double* u, N_len Nlen, double dx) {
 }
 
 void solve_coarse(const double* f, double* u, N_len Nlen, double dx) {
-    solve(f, u, Nlen, 2, 1, dx);
+    solve(f, u, Nlen, 1, 1, dx);
 }
 
 void solve_base(const double* f, double* u, N_len Nlen, double dx) {
@@ -115,7 +115,7 @@ void solve_base(const double* f, double* u, N_len Nlen, double dx) {
 
 
 int main() {
-    int N = 257;
+    int N = 701;
     int iters = 5;
     double w = 1.9;
     double L = 20;
@@ -125,10 +125,11 @@ int main() {
     double a = 1;
     double b = 1;
     double c = 1;
-    double* u = calloc(sizeof(double), N*N*N);
+    //double* u = calloc(sizeof(double), N*N*N);
     double* u2 = calloc(sizeof(double), N*N*N);
     double* f = calloc(sizeof(double), N*N*N);
 
+    /*
     double x_mid, y_mid, z_mid;
     x_mid = y_mid = z_mid = L/2;
 
@@ -163,27 +164,6 @@ int main() {
         }
     }
 
-    /*
-    //setting up source function
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
-            for (int k = 0; k < N; k++) {
-                double x = (i*dx - (x_mid));
-                double y = (j*dx - (y_mid));
-                double z = (k*dx - (z_mid + 3));
-                double rsqrd = (1/(a*a))*x*x + (1/(b*b))*y*y + (1/(c*c))*z*z;
-                int n = loc(i, j, k, (N_len){N, N, N});
-                if (rsqrd < 1) {
-                    f[n] = M_PI*4*dens;
-                }
-            }
-        }
-    }
-    */
-
-
-
-
     printf("The mass is %f\n", m);
 
     //setting up boundary conditions
@@ -195,14 +175,6 @@ int main() {
             func(u, i, N - 1, j, L, N, m, dx);
             func(u, 0, i, j, L, N, m, dx);
             func(u, N - 1, i, j, L, N, m, dx);
-            /*
-            func(u2, i, j, 0, L, N, m, dx);
-            func(u2, i, j, N - 1, L, N, m, dx);
-            func(u2, i, 0, j, L, N, m, dx);
-            func(u2, i, N - 1, j, L, N, m, dx);
-            func(u2, 0, i, j, L, N, m, dx);
-            func(u2, N - 1, i, j, L, N, m, dx);
-            */
         }
     }
 
@@ -211,7 +183,7 @@ int main() {
             for (int k = 1; k < N-1; k++) {
                 double x = (i*dx - L/2);
                 double y = (j*dx - L/2);
-                double z = (k*dx - L/2 + 0.2);
+                double z = (k*dx - L/2 + dx);
                 double rsqrd = x*x + y*y + z*z;
                 int n = loc(i, j, k, (N_len){N, N, N});
                 if (rsqrd < R*R) {
@@ -225,7 +197,7 @@ int main() {
 
 
     printf("dx = %f\n", dx);
-    save_gird("data.txt", u, N*N*N);
+    //save_gird("data.txt", u, N*N*N);
     memcpy(u2, u, length((N_len){N, N, N})*sizeof(double));
 
 
@@ -249,36 +221,32 @@ int main() {
 
     //printf("number of iters: %d\n", iters*6);
     //solve(f, u, (N_len){N, N, N}, 100, w, dx);
-    save_gird("data2.txt", u, N*N*N);
-
+    //save_gird("data2.txt", u, N*N*N);
+    */
     N_len Nlen = (N_len){N, N, N};
-    clock_t start = clock();
     funcs_args arg = (funcs_args){solve_top, solve_coarse, solve_base};
     multi(f, u2, Nlen, dx, arg, true);
-    clock_t end = clock();
-    double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
-    printf("Time taken for multi: %f seconds \n", cpu_time_used);
-    save_gird("data3.txt", u2, N*N*N);
+    printf("%f\n", u2[1000]);
+    /*
+    //save_gird("data3.txt", u2, N*N*N);
+
 
     printf("error for multi :%lf\n", L2(f, u2, Nlen,dx));
     printf("error for SOR :%lf\n", L2(f, u, Nlen,dx));
     printf("avg diff :%f\n", avg_diff(u, u2, Nlen));
 
     location_value bruh = max_diff(u, u2, Nlen);
-    //save_line("line.txt", u, bruh.i, bruh.k, Nlen);
-    //save_line("line3.txt", u2, bruh.i, bruh.k, Nlen);
+    save_line("line.txt", u, N/2, N/2, Nlen);
+    save_line("line3.txt", u2, N/2, N/2, Nlen);
 
     printf("biggest diff was at {%i, %i, %i} and was %f\n", bruh.i, bruh.j, bruh.k, bruh.f);
     printf("%i\n", loc( bruh.i, bruh.j, bruh.k, Nlen));
-
-    //restriction(f, u, u2, M, dx*dx);
-    //save_gird("data2.txt", u2, N2*N2*N2);
-    //printf("%f", u2[0]);
 
 
     //save_gird("f.txt", f, N*N*N);
     save_params("params.txt", 9, (double) N, L, dx, R, dens, a, b, c, (double) N);
 
+    */
     return 0;
 
 

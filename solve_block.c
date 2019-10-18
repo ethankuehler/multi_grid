@@ -1,12 +1,15 @@
 
 #include "multi_grid/operators.h"
+#include <omp.h>
 
 
 void method1(double* u, const double* f, N_len Nlen, double w, double dx) {
     int Ni = Nlen.i;
     int Nj = Nlen.j;
     int Nk = Nlen.k;
-    for (int i = 1; i < Ni - 1; i++) {
+    int i;
+#pragma omp parallel for num_threads(8) schedule(auto) shared(u, f, Nlen, w, dx) private(i)
+    for (i = 1; i < Ni - 1; i++) {
         for (int j = 1; j < Nj - 1; j++) {
             for (int k = 1; k < Nk - 1; k++) {
                 int n = loc(i, j, k, Nlen);
