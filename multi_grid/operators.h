@@ -3,7 +3,6 @@
 
 #include "multi_grid.h"
 #include <stdbool.h>
-
 // Takes a N_len can calculates the N_len for a coarsened grid, smallest length must be greater then three.
 N_len coarsen(N_len Nlen);
 

@@ -1,6 +1,5 @@
 #ifndef C_SOR_3D_SOLVE_BLOCK_H
 #define C_SOR_3D_SOLVE_BLOCK_H
-
 #include "multi_grid/multi_grid.h"
 
 /*
