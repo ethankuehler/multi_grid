@@ -5,6 +5,12 @@
 #ifndef C_SOR_3D_STUFF_H
 #define C_SOR_3D_STUFF_H
 
+#include "multi_grid/operators.h"
+#include <math.h>
+#include <stdio.h>
+#include <stdarg.h>
+#include <string.h>
+
 void func(double* u, int i, int j, int k, double L, int N, double m, double dx) {
     double x = pow((i*dx - L/2), 2);
     double y = pow((j*dx - L/2), 2);
@@ -100,7 +106,7 @@ void data(double* u, double* u2, double* f, N_len Nlen, double start, double end
     int N = Nlen.i;
     printf("%f\n", u2[1000]);
     printf("time taken for multi was %f\n", end - start);
-    save_gird("data3.txt", u2, N*N*N);
+
 
 
     printf("error for multi :%lf\n", L2(f, u2, Nlen,dx));
@@ -115,12 +121,12 @@ void data(double* u, double* u2, double* f, N_len Nlen, double start, double end
     printf("%i\n", loc( bruh.i, bruh.j, bruh.k, Nlen));
 
 
-    save_gird("f.txt", f, N*N*N);
+    //save_gird("f.txt", f, N*N*N);
     save_params("params.txt", 9, (double) N, L, dx, R, dens, a, b, c, (double) N);
 
 }
 
-void inital(double* u, double* u2, double* f, double dens, double R, N_len Nlen, double L, double dx) {
+void inital(double* u, double* u2, double* f, double dens, double R, N_len Nlen, double L, double dx, double shift) {
     double x_mid, y_mid, z_mid;
     x_mid = y_mid = z_mid = L/2;
 
@@ -162,7 +168,7 @@ void inital(double* u, double* u2, double* f, double dens, double R, N_len Nlen,
             for (int k = 0; k < N; k++) {
                 double x = (i*dx - L/2);
                 double y = (j*dx - L/2);
-                double z = (k*dx - L/2 + 0.2);
+                double z = (k*dx - L/2 + shift);
                 double rsqrd = x*x + y*y + z*z;
                 int n = loc(i, j, k, (N_len){N, N, N});
                 if (rsqrd < R*R) {
