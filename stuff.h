@@ -157,9 +157,9 @@ void inital(double* u, double* u2, double* f, double dens, double R, N_len Nlen,
 
     printf("The mass is %f\n", m);
 
-    for (int i = 1; i < N-1; i++) {
-        for (int j = 1; j < N-1; j++) {
-            for (int k = 1; k < N-1; k++) {
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            for (int k = 0; k < N; k++) {
                 double x = (i*dx - L/2);
                 double y = (j*dx - L/2);
                 double z = (k*dx - L/2 + 0.2);
@@ -178,9 +178,9 @@ void inital(double* u, double* u2, double* f, double dens, double R, N_len Nlen,
     memcpy(u2, u, length((N_len){N, N, N})*sizeof(double));
 
 
-    for (int i = 1; i < N-1; i++) {
-        for (int j = 1; j < N-1; j++) {
-            for (int k = 1; k < N-1; k++) {
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            for (int k = 0; k < N; k++) {
                 double x = (i*dx - L/2);
                 double y = (j*dx - L/2);
                 double z = (k*dx - L/2);
