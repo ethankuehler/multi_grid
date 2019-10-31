@@ -1,7 +1,6 @@
 
 #include "multi_grid/operators.h"
 #include <omp.h>
-#define double float
 
 
 void method1(double* u, const double* f, N_len Nlen, double w, double dx) {

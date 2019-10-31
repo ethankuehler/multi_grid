@@ -102,12 +102,8 @@ location_value max_diff(const double* f1, const double* f2, N_len Nlen) {
     return max;
 }
 
-void data(double* u, double* u2, double* f, N_len Nlen, double start, double end, double dx, double L, double R, double dens, double a,double  b, double c) {
+void data(double* u, double* u2, double* f, N_len Nlen, double dx, double L, double R, double dens, double a,double  b, double c) {
     int N = Nlen.i;
-    printf("%f\n", u2[1000]);
-    printf("time taken for multi was %f\n", end - start);
-
-
 
     printf("error for multi :%lf\n", L2(f, u2, Nlen,dx));
     printf("error for SOR :%lf\n", L2(f, u, Nlen,dx));

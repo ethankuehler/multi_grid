@@ -7,7 +7,7 @@
 #include "stuff.h"
 
 void solve_top(const double* f, double* u, N_len Nlen, double dx) {
-    tSolve(f, u, Nlen, 1, 1.9, dx);
+    tSolve(f, u, Nlen, 2, 1.9, dx);
 }
 
 void solve_coarse(const double* f, double* u, N_len Nlen, double dx) {
@@ -20,10 +20,8 @@ void solve_base(const double* f, double* u, N_len Nlen, double dx) {
 
 
 int main() {
-    int N = 513;
+    int N = 257;
     N_len Nlen = (N_len){N, N, N};
-    int iters = 5;
-    double w = 1.2;
     double L = 20;
     double dx = L/N;
     double dens = 1;
@@ -48,17 +46,24 @@ int main() {
     //solve(f, u, (N_len){N, N, N}, 100, w, dx);
     //save_gird("data2.txt", u, N*N*N);
 
+    double total = 0;
+    double times = 1;
 
     funcs_args arg = (funcs_args){solve_top, solve_coarse, solve_base};
-    double start = omp_get_wtime();
-    multi(f, u2, Nlen, dx, arg, true); //muti call
-    double end = omp_get_wtime();
+    for(int i = 0; i < times; i++) {
+        double start = omp_get_wtime();
+        multi(f, u2, Nlen, dx, arg, true); //muti call
+        double end = omp_get_wtime();
+        total += end - start;
+        printf("time taken for multi was %f\n", end - start);
+    }
+    printf("avg time taken for multi was %f\n", total/times);
     //tSolve(f, u2, (N_len){N, N, N}, 50, w, dx);
 
 
     //dose all the output
-    //save_gird("data3.txt", u2, N*N*N);
-    data(u, u2, f, Nlen, start, end, dx, L, R, dens, a, b, c);
+    save_gird("data3.txt", u2, N*N*N);
+    data(u, u2, f, Nlen, dx, L, R, dens, a, b, c);
 
     return 0;
 }

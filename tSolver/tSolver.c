@@ -9,7 +9,7 @@ void solver_red(const double* f, double* u, N_len Nlen, double w, double dxs) {
     int Nj = Nlen.j;
     int Nk = Nlen.k;
     int i;
-#pragma omp parallel for num_threads(4) schedule(static) shared(u, f, Nlen, w, dxs) private(i) collapse(3)
+#pragma omp parallel for num_threads(4) schedule(static, 5) shared(u, f, Nlen, w, dxs) private(i)
     for (i = 1; i < Ni - 1; i++) {
         for (int j = 1; j < Nj - 1; j++) {
             for (int k = 1; k < Nk - 1; k++) {

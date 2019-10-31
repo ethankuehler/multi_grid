@@ -15,7 +15,7 @@ N2 = int(params[8])
 
 m = 4.245404
 # load in data
-loc = int(129)
+loc = int(129 + 3)
 half = int(129)
 data = np.loadtxt('cmake-build-release/data.txt')
 data = data.reshape(N, N, N)
