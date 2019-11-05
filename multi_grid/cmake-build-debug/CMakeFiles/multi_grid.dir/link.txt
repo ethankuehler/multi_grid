@@ -1,0 +1,2 @@
+/usr/bin/ar qc libmulti_grid.a  CMakeFiles/multi_grid.dir/multi_grid.c.o CMakeFiles/multi_grid.dir/operators.c.o
+/usr/bin/ranlib libmulti_grid.a
