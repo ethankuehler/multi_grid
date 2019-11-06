@@ -50,12 +50,12 @@ void reduce(const double* f_in, double* f_out, N_len Nlen) {
     int Ni = Nlen.i;
     int Nj = Nlen.j;
     int Nk = Nlen.k;
-    int i;
-#pragma omp parallel for num_threads(4) private(i)
+    int i, j, k;
+#pragma omp parallel for num_threads(4) private(i, j, k) collapse(3)
     //iterating though all interior points, we move by 2 in order to get to points that mach on the coarser gird.
     for (i = 1; i < Ni - 1; i += 2) {
-        for (int j = 1; j < Nj - 1; j += 2) {
-            for (int k = 1; k < Nk - 1; k += 2) {
+        for (j = 1; j < Nj - 1; j += 2) {
+            for (k = 1; k < Nk - 1; k += 2) {
                 //taking the avg of the closest points on fine and mapping to the coarse grid.
                 f_out[loc(i/2, j/2, k/2, Nclen)] =
                         (f_in[loc(i, j, k, Nlen)] +
@@ -79,12 +79,12 @@ void residual(const double* f, const double* u, double* r, N_len Nlen, double dx
     int Ni = Nlen.i;
     int Nj = Nlen.j;
     int Nk = Nlen.k;
-    int i;
     //because the outer points are fixed by the boundary conditions, their residual is zero.
-#pragma omp parallel for num_threads(4) private(i)
+    int i, j, k;
+#pragma omp parallel for num_threads(4) private(i, j, k) collapse(3)
     for (i = 1; i < Ni - 1; i++) {
-        for (int j = 1; j < Nj - 1; j++) {
-            for (int k = 1; k < Nk - 1; k++) {
+        for (j = 1; j < Nj - 1; j++) {
+            for (k = 1; k < Nk - 1; k++) {
                 int n = loc(i, j, k, Nlen);
                 r[n] = f[n] -
                        (u[n - Ni*Nj] + u[n - Nj] + u[n - 1] + -6*u[n] + u[n + 1] + u[n + Nj] + u[n + Ni*Nj])/dxs;
@@ -123,11 +123,11 @@ void interpolate(const double* f, double* f_out, N_len Nlen, double dx) {
     int Nk = Nlen.k;
     //middle area and other walls.
     //we only need to do the interior areas as their should be zero
-    int i;
-#pragma omp parallel for num_threads(4) private(i)
+    int i, j, k;
+#pragma omp parallel for num_threads(4) private(i, j, k) collapse(3)
     for (i = 0; i < Ni - 2; i += 2) {
-        for (int j = 0; j < Nj - 2; j += 2) {
-            for (int k = 0; k < Nk - 2; k += 2) {
+        for (j = 0; j < Nj - 2; j += 2) {
+            for (k = 0; k < Nk - 2; k += 2) {
 
                 //last corner
                 f_out[loc(i + 2, j + 2, k + 2, Nlen)] = f[loc(i/2 + 1, j/2 + 1, k/2 + 1, Nclen)];

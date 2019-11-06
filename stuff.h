@@ -11,6 +11,8 @@
 #include <stdarg.h>
 #include <string.h>
 
+#define NUM 4
+
 void func(double* u, int i, int j, int k, double L, int N, double m, double dx) {
     double x = pow((i*dx - L/2), 2);
     double y = pow((j*dx - L/2), 2);
@@ -128,9 +130,11 @@ void inital(double* u, double* u2, double* f, double dens, double R, N_len Nlen,
 
     int N = Nlen.i;
     //setting up source function
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
-            for (int k = 0; k < N; k++) {
+    int i, j, k;
+#pragma omp parallel for num_threads(NUM) private(i, j, k) collapse(3)
+    for ( i = 0; i < N; i++) {
+        for ( j = 0; j < N; j++) {
+            for ( k = 0; k < N; k++) {
                 double x = (i*dx - (x_mid));
                 double y = (j*dx - (y_mid));
                 double z = (k*dx - (z_mid));
@@ -146,9 +150,10 @@ void inital(double* u, double* u2, double* f, double dens, double R, N_len Nlen,
     }
 
     double m = 0;
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
-            for (int k = 0; k < N; k++) {
+#pragma omp parallel for num_threads(NUM) private(i, j, k) collapse(3)
+    for ( i = 0; i < N; i++) {
+        for ( j = 0; j < N; j++) {
+            for ( k = 0; k < N; k++) {
                 int n = loc(i,j,k, (N_len){N, N, N});
                 if (f[n] != 0.0) {
                     m += dens*dx*dx*dx;
@@ -158,10 +163,10 @@ void inital(double* u, double* u2, double* f, double dens, double R, N_len Nlen,
     }
 
     printf("The mass is %f\n", m);
-
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
-            for (int k = 0; k < N; k++) {
+#pragma omp parallel for num_threads(NUM) private(i, j, k) collapse(3)
+    for ( i = 0; i < N; i++) {
+        for ( j = 0; j < N; j++) {
+            for ( k = 0; k < N; k++) {
                 double x = (i*dx - L/2);
                 double y = (j*dx - L/2);
                 double z = (k*dx - L/2 + shift);
@@ -179,10 +184,10 @@ void inital(double* u, double* u2, double* f, double dens, double R, N_len Nlen,
     //save_gird("data.txt", u, N*N*N);
     memcpy(u2, u, length((N_len){N, N, N})*sizeof(double));
 
-
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
-            for (int k = 0; k < N; k++) {
+#pragma omp parallel for num_threads(NUM) private(i, j, k) collapse(3)
+    for ( i = 0; i < N; i++) {
+        for ( j = 0; j < N; j++) {
+            for ( k = 0; k < N; k++) {
                 double x = (i*dx - L/2);
                 double y = (j*dx - L/2);
                 double z = (k*dx - L/2);
