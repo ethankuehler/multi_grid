@@ -57,8 +57,9 @@ double L2(double* f, double* u, N_len Nlen, double dx) {
     double sum = 0;
     double* r = calloc(sizeof(double*), length(Nlen));
     residual(f, u, r, Nlen, dx*dx);
-
-    for(int i = 0; i < length(Nlen); i++) {
+    int i;
+#pragma omp parallel for num_threads(NUM) private(i)
+    for(i = 0; i < length(Nlen); i++) {
         sum += pow(r[i],2);
     }
     free(r);
@@ -67,7 +68,9 @@ double L2(double* f, double* u, N_len Nlen, double dx) {
 
 double avg_diff(const double* f1, const double* f2, N_len Nlen) {
     double sum = 0;
-    for(int i = 0; i < length(Nlen); i++) {
+    int i;
+#pragma omp parallel for num_threads(NUM) private(i)
+    for(i = 0; i < length(Nlen); i++) {
         sum += fabs(f1[i] - f2[i]);
     }
     return sum/length(Nlen);
@@ -85,9 +88,11 @@ location_value max_diff(const double* f1, const double* f2, N_len Nlen) {
     int Ni = Nlen.i;
     int Nj = Nlen.j;
     int Nk = Nlen.k;
-    for (int i = 0; i < Ni; i++) {
-        for (int j = 0; j < Nj; j++) {
-            for (int k = 0; k < Nk; k++) {
+    int i, j, k;
+#pragma omp parallel for num_threads(NUM) private(i, j, k) collapse(3)
+    for ( i = 0; i < Ni; i++) {
+        for ( j = 0; j < Nj; j++) {
+            for ( k = 0; k < Nk; k++) {
                 int n = loc(i, j, k, Nlen);
                 double one = f1[n];
                 double two = f2[n];
