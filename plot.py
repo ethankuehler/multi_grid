@@ -54,7 +54,7 @@ x2 = np.linspace(-L / 2, L / 2, N2)
 y = -m * (3 * R ** 2 - x ** 2) / (2 * R ** 3)
 y[x < -a] = m / x[x < -a]
 y[x > a] = -m / x[x > a]
-pp.plot(x, y, 'm')
+#pp.plot(x, y, 'm')
 pp.plot(x2, line, 'b')
 pp.plot(x2, line2, 'r')
 pp.plot(x2, line3, 'g')

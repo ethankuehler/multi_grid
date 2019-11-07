@@ -7,11 +7,11 @@
 #include "stuff.h"
 
 void solve_top(const double* f, double* u, N_len Nlen, double dx) {
-    tSolve(f, u, Nlen, 2, 1.9, dx);
+    tSolve(f, u, Nlen, 5, 1.9, dx);
 }
 
 void solve_coarse(const double* f, double* u, N_len Nlen, double dx) {
-    tSolve(f, u, Nlen, 5, 1, dx);
+    tSolve(f, u, Nlen, 1, 1, dx);
 }
 
 void solve_base(const double* f, double* u, N_len Nlen, double dx) {
@@ -43,8 +43,8 @@ int main() {
     //solve(f, u, (N_len){N, N, N}, 100, w, dx);
 
     //printf("number of iters: %d\n", iters*6);
-    //solve(f, u, (N_len){N, N, N}, 100, w, dx);
-    //save_gird("data2.txt", u, N*N*N);
+    solve(f, u, (N_len){N, N, N}, 100, 1.9, dx);
+    save_gird("data2.txt", u, N*N*N);
 
     double total = 0;
     double times = 1;

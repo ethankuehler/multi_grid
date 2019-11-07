@@ -186,7 +186,7 @@ void inital(double* u, double* u2, double* f, double dens, double R, N_len Nlen,
         }
     }
     printf("dx = %f\n", dx);
-    //save_gird("data.txt", u, N*N*N);
+    save_gird("data.txt", u, N*N*N);
     memcpy(u2, u, length((N_len){N, N, N})*sizeof(double));
 
 #pragma omp parallel for num_threads(NUM) private(i, j, k) collapse(3)
