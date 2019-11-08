@@ -19,9 +19,9 @@ typedef struct _N_len {
  * solve_base is used on the coarsest gird.
  */
 typedef struct _funcs_args {
-    void (*solve_top)(const double*, double*, N_len, double);
-    void (*solve_coarse)(const double*, double*, N_len, double);
-    void (*solve_base)(const double*, double*, N_len, double);
+    void (*solve_top)(const float*, float*, N_len, float);
+    void (*solve_coarse)(const float*, float*, N_len, float);
+    void (*solve_base)(const float*, float*, N_len, float);
 } funcs_args;
 
 /*
@@ -33,7 +33,7 @@ typedef struct _funcs_args {
  * args are the solver functions.
  * top should always be set to true.
  */
-void multi(const double* f, double* u, N_len Nlen, double dx, funcs_args arg, bool top);
+void multi(const float* f, float* u, N_len Nlen, float dx, funcs_args arg, bool top);
 
 
 #endif //C_SOR_3D_MULTI_GRID_H

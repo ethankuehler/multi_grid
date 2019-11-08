@@ -13,11 +13,11 @@
 
 #define NUM 4
 
-void func(double* u, int i, int j, int k, double L, int N, double m, double dx) {
-    double x = pow((i*dx - L/2), 2);
-    double y = pow((j*dx - L/2), 2);
-    double z = pow((k*dx - L/2), 2);
-    double rsqrd = x + y + z;
+void func(float* u, int i, int j, int k, float L, int N, float m, float dx) {
+    float x = pow((i*dx - L/2), 2);
+    float y = pow((j*dx - L/2), 2);
+    float z = pow((k*dx - L/2), 2);
+    float rsqrd = x + y + z;
     int n = loc(i, j, k, (N_len){N, N, N});
     u[n] = -m/sqrt(rsqrd);
 }
@@ -33,7 +33,7 @@ void save_params(const char* str, int count, ...) {
     fclose(file);
 }
 
-void save_line(const char* str, double* vec,int i, int j, N_len Nlen) {
+void save_line(const char* str, float* vec,int i, int j, N_len Nlen) {
     FILE* file = fopen(str, "w");
     int n = loc(i, j, 0, Nlen);
     for (int i = n; i < n + Nlen.k; i++) {
@@ -43,7 +43,7 @@ void save_line(const char* str, double* vec,int i, int j, N_len Nlen) {
     fclose(file);
 }
 
-void save_gird(const char* str, double* vec, int length) {
+void save_gird(const char* str, float* vec, int length) {
     FILE* file = fopen(str, "w");
 
     for (int i = 0; i < length; i++) {
@@ -53,9 +53,9 @@ void save_gird(const char* str, double* vec, int length) {
     fclose(file);
 }
 
-double L2(double* f, double* u, N_len Nlen, double dx) {
-    double sum = 0;
-    double* r = calloc(sizeof(double*), length(Nlen));
+float L2(float* f, float* u, N_len Nlen, float dx) {
+    float sum = 0;
+    float* r = calloc(sizeof(float*), length(Nlen));
     residual(f, u, r, Nlen, dx*dx);
     int i;
 #pragma omp parallel for num_threads(NUM) private(i)
@@ -66,8 +66,8 @@ double L2(double* f, double* u, N_len Nlen, double dx) {
     return pow(sum, 1.0/2.0)/length(Nlen);
 }
 
-double avg_diff(const double* f1, const double* f2, N_len Nlen) {
-    double sum = 0;
+float avg_diff(const float* f1, const float* f2, N_len Nlen) {
+    float sum = 0;
     int i;
 #pragma omp parallel for num_threads(NUM) private(i)
     for(i = 0; i < length(Nlen); i++) {
@@ -80,10 +80,10 @@ typedef struct _location_value {
     int i;
     int j;
     int k;
-    double f;
+    float f;
 }location_value;
 
-location_value max_diff(const double* f1, const double* f2, N_len Nlen) {
+location_value max_diff(const float* f1, const float* f2, N_len Nlen) {
     location_value max = (location_value){0, 0, 0, 0};
     int Ni = Nlen.i;
     int Nj = Nlen.j;
@@ -94,9 +94,9 @@ location_value max_diff(const double* f1, const double* f2, N_len Nlen) {
         for ( j = 0; j < Nj; j++) {
             for ( k = 0; k < Nk; k++) {
                 int n = loc(i, j, k, Nlen);
-                double one = f1[n];
-                double two = f2[n];
-                double dif = fabs(one - two);
+                float one = f1[n];
+                float two = f2[n];
+                float dif = fabs(one - two);
                 if (max.f < dif){
                     max.f = dif;
                     max.i = i;
@@ -109,7 +109,7 @@ location_value max_diff(const double* f1, const double* f2, N_len Nlen) {
     return max;
 }
 
-void data(double* u, double* u2, double* f, N_len Nlen, double dx, double L, double R, double dens, double a,double  b, double c) {
+void data(float* u, float* u2, float* f, N_len Nlen, float dx, float L, float R, float dens, float a,float  b, float c) {
     int N = Nlen.i;
 
     printf("error for multi :%lf\n", L2(f, u2, Nlen,dx));
@@ -125,12 +125,12 @@ void data(double* u, double* u2, double* f, N_len Nlen, double dx, double L, dou
 
 
     //save_gird("f.txt", f, N*N*N);
-    save_params("params.txt", 9, (double) N, L, dx, R, dens, a, b, c, (double) N);
+    save_params("params.txt", 9, (float) N, L, dx, R, dens, a, b, c, (float) N);
 
 }
 
-void inital(double* u, double* u2, double* f, double dens, double R, N_len Nlen, double L, double dx, double shift) {
-    double x_mid, y_mid, z_mid;
+void inital(float* u, float* u2, float* f, float dens, float R, N_len Nlen, float L, float dx, float shift) {
+    float x_mid, y_mid, z_mid;
     x_mid = y_mid = z_mid = L/2;
 
     int N = Nlen.i;
@@ -140,10 +140,10 @@ void inital(double* u, double* u2, double* f, double dens, double R, N_len Nlen,
     for ( i = 0; i < N; i++) {
         for ( j = 0; j < N; j++) {
             for ( k = 0; k < N; k++) {
-                double x = (i*dx - (x_mid));
-                double y = (j*dx - (y_mid));
-                double z = (k*dx - (z_mid));
-                double rsqrd = (x*x + y*y + z*z);
+                float x = (i*dx - (x_mid));
+                float y = (j*dx - (y_mid));
+                float z = (k*dx - (z_mid));
+                float rsqrd = (x*x + y*y + z*z);
                 int n = loc(i, j, k, (N_len){N, N, N});
                 if (rsqrd < 1) {
                     f[n] = M_PI*4*dens;
@@ -154,7 +154,7 @@ void inital(double* u, double* u2, double* f, double dens, double R, N_len Nlen,
         }
     }
 
-    double m = 0;
+    float m = 0;
 #pragma omp parallel for num_threads(NUM) private(i, j, k) collapse(3)
     for ( i = 0; i < N; i++) {
         for ( j = 0; j < N; j++) {
@@ -172,10 +172,10 @@ void inital(double* u, double* u2, double* f, double dens, double R, N_len Nlen,
     for ( i = 0; i < N; i++) {
         for ( j = 0; j < N; j++) {
             for ( k = 0; k < N; k++) {
-                double x = (i*dx - L/2);
-                double y = (j*dx - L/2);
-                double z = (k*dx - L/2 + shift);
-                double rsqrd = x*x + y*y + z*z;
+                float x = (i*dx - L/2);
+                float y = (j*dx - L/2);
+                float z = (k*dx - L/2 + shift);
+                float rsqrd = x*x + y*y + z*z;
                 int n = loc(i, j, k, (N_len){N, N, N});
                 if (rsqrd < R*R) {
                     u2[n] = u[n] = -(m/(2*R*R*R))*(3*R*R - rsqrd);
@@ -187,16 +187,16 @@ void inital(double* u, double* u2, double* f, double dens, double R, N_len Nlen,
     }
     printf("dx = %f\n", dx);
     //save_gird("data.txt", u, N*N*N);
-    memcpy(u2, u, length((N_len){N, N, N})*sizeof(double));
+    memcpy(u2, u, length((N_len){N, N, N})*sizeof(float));
 
 #pragma omp parallel for num_threads(NUM) private(i, j, k) collapse(3)
     for ( i = 0; i < N; i++) {
         for ( j = 0; j < N; j++) {
             for ( k = 0; k < N; k++) {
-                double x = (i*dx - L/2);
-                double y = (j*dx - L/2);
-                double z = (k*dx - L/2);
-                double rsqrd = x*x + y*y + z*z;
+                float x = (i*dx - L/2);
+                float y = (j*dx - L/2);
+                float z = (k*dx - L/2);
+                float rsqrd = x*x + y*y + z*z;
                 int n = loc(i, j, k, (N_len){N, N, N});
                 if (rsqrd < R*R) {
                     u[n] = -(m/(2*R*R*R))*(3*R*R - rsqrd);

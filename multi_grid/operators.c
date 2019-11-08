@@ -45,7 +45,7 @@ int loc(int i, int j, int k, N_len Nlen) {
  * This function only iterates on the interior points of the  of the gird as the boundary conditions are fixed
  * and because this function is used on residuals they will always be zero at the boundary.
  */
-void reduce(const double* f_in, double* f_out, N_len Nlen) {
+void reduce(const float* f_in, float* f_out, N_len Nlen) {
     N_len Nclen = coarsen(Nlen);
     int Ni = Nlen.i;
     int Nj = Nlen.j;
@@ -75,7 +75,7 @@ void reduce(const double* f_in, double* f_out, N_len Nlen) {
  * Only the interior points are done because boundary conditions are fixed and their residual is zero.
  * This function assumes that input array is filled with zeros on the boundary
  */
-void residual(const double* f, const double* u, double* r, N_len Nlen, double dxs) {
+void residual(const float* f, const float* u, float* r, N_len Nlen, float dxs) {
     int Ni = Nlen.i;
     int Nj = Nlen.j;
     int Nk = Nlen.k;
@@ -97,8 +97,8 @@ void residual(const double* f, const double* u, double* r, N_len Nlen, double dx
  * The restriction function is used to created the coarser problem for multi grid. it first computes the residual using
  * the residual function and then reduces that to the coarser gird.
  */
-void restriction(const double* f, const double* u, double* f_out, N_len Nlen, double dxs) {
-    double* r = calloc(sizeof(double), length(Nlen)); //freed at end of function
+void restriction(const float* f, const float* u, float* f_out, N_len Nlen, float dxs) {
+    float* r = calloc(sizeof(float), length(Nlen)); //freed at end of function
     residual(f, u, r, Nlen, dxs);//compute residual.
     reduce(r, f_out, Nlen);//reduce residuals
     free(r);
@@ -116,7 +116,7 @@ void restriction(const double* f, const double* u, double* f_out, N_len Nlen, do
  * We can make this assumption because as we iterate all plots theses parts will overlap with already done parts or
  * boundary walls. On the leftover points the trilinear interpolation is done.
  */
-void interpolate(const double* f, double* f_out, N_len Nlen, double dx) {
+void interpolate(const float* f, float* f_out, N_len Nlen, float dx) {
     N_len Nclen = coarsen(Nlen);
     int Ni = Nlen.i;
     int Nj = Nlen.j;

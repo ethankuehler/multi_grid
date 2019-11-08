@@ -11,17 +11,17 @@
  * It will interpolate solution to approximate problem and add that to the current solution. Finally it will
  * again choose a solver, free memory and return.
  */
-void multi(const double* f, double* u, N_len Nlen, double dx, funcs_args arg, bool top) {
+void multi(const float* f, float* u, N_len Nlen, float dx, funcs_args arg, bool top) {
     //checking to see if on coarsest
     if (!can_coarsen(Nlen)) {
         arg.solve_base(f, u, Nlen, dx);//getting solution to coarsest grid
     } else {
         N_len Nclen = coarsen(Nlen); //Nlen for coarser gird, hence the c.
         //Arrays to store coarser gird.
-        double* fc = calloc(sizeof(double), length(Nclen));
-        double* uc = calloc(sizeof(double), length(Nclen));
+        float* fc = calloc(sizeof(float), length(Nclen));
+        float* uc = calloc(sizeof(float), length(Nclen));
         //Array to sore interpolated solution.
-        double* d = calloc(sizeof(double), length(Nlen));
+        float* d = calloc(sizeof(float), length(Nlen));
 
         //checking to see if finest gird
         if (top != true) {

@@ -4,7 +4,7 @@
 #include <string.h>
 
 
-void solver_red(const double* f, double* u, N_len Nlen, double w, double dxs) {
+void solver_red(const float* f, float* u, N_len Nlen, float w, float dxs) {
     int Ni = Nlen.i;
     int Nj = Nlen.j;
     int Nk = Nlen.k;
@@ -23,7 +23,7 @@ void solver_red(const double* f, double* u, N_len Nlen, double w, double dxs) {
 
 }
 
-void tSolve(const double* f, double* u, N_len Nlen, int iter, double w, double dx) {
+void tSolve(const float* f, float* u, N_len Nlen, int iter, float w, float dx) {
     for(int _= 0; _ < iter; _++) {
         solver_red(f, u, Nlen, w, dx*dx);
     }

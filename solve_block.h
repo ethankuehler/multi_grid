@@ -11,6 +11,6 @@
  * w is the omega for sor
  * dx is the step size
  */
-void solve(const double* f, double* u, N_len Nlen, int iters, double w, double dx) ;
+void solve(const float* f, float* u, N_len Nlen, int iters, float w, float dx) ;
 
 #endif //C_SOR_3D_SOLVE_BLOCK_H

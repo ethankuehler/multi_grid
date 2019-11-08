@@ -3,7 +3,7 @@
 #include <omp.h>
 
 
-void method1(double* u, const double* f, N_len Nlen, double w, double dx) {
+void method1(float* u, const float* f, N_len Nlen, float w, float dx) {
     int Ni = Nlen.i;
     int Nj = Nlen.j;
     int Nk = Nlen.k;
@@ -21,7 +21,7 @@ void method1(double* u, const double* f, N_len Nlen, double w, double dx) {
     }
 }
 
-void method2(double* u, const double* f, N_len Nlen, double w, double dx) {
+void method2(float* u, const float* f, N_len Nlen, float w, float dx) {
     int Ni = Nlen.i;
     int Nj = Nlen.j;
     int Nk = Nlen.k;
@@ -37,7 +37,7 @@ void method2(double* u, const double* f, N_len Nlen, double w, double dx) {
     }
 }
 
-void method3(double* u, const double* f, N_len Nlen, double w, double dx) {
+void method3(float* u, const float* f, N_len Nlen, float w, float dx) {
     int Ni = Nlen.i;
     int Nj = Nlen.j;
     int Nk = Nlen.k;
@@ -53,7 +53,7 @@ void method3(double* u, const double* f, N_len Nlen, double w, double dx) {
     }
 }
 
-void method4(double* u, const double* f, N_len Nlen, double w, double dx) {
+void method4(float* u, const float* f, N_len Nlen, float w, float dx) {
     int Ni = Nlen.i;
     int Nj = Nlen.j;
     int Nk = Nlen.k;
@@ -69,7 +69,7 @@ void method4(double* u, const double* f, N_len Nlen, double w, double dx) {
     }
 }
 
-void method5(double* u, const double* f, N_len Nlen, double w, double dx) {
+void method5(float* u, const float* f, N_len Nlen, float w, float dx) {
     int Ni = Nlen.i;
     int Nj = Nlen.j;
     int Nk = Nlen.k;
@@ -86,7 +86,7 @@ void method5(double* u, const double* f, N_len Nlen, double w, double dx) {
 }
 
 
-void method6(double* u, const double* f, N_len Nlen, double w, double dx) {
+void method6(float* u, const float* f, N_len Nlen, float w, float dx) {
     int Ni = Nlen.i;
     int Nj = Nlen.j;
     int Nk = Nlen.k;
@@ -102,7 +102,7 @@ void method6(double* u, const double* f, N_len Nlen, double w, double dx) {
     }
 }
 
-void solve(const double* f, double* u, N_len Nlen, int iters, double w, double dx) {
+void solve(const float* f, float* u, N_len Nlen, int iters, float w, float dx) {
     dx = dx*dx;
     for (int i = 0; i < iters; i++) {
         method1(u, f, Nlen, w, dx);

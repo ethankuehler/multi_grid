@@ -22,7 +22,7 @@ int loc(int i, int j, int k, N_len Nlen);
 
 //f_in is the fine grid, f_out is the coarse grid, Nlen is that of the fine gird.
 //take a fine grind and avenges it to the coarse gird.
-void reduce(const double* f_in, double* f_out, N_len Nlen);
+void reduce(const float* f_in, float* f_out, N_len Nlen);
 
 /*
  * calculates the residual of u.
@@ -32,7 +32,7 @@ void reduce(const double* f_in, double* f_out, N_len Nlen);
  * Nlen is the dimension of the gird.
  * dxs is the step size squared.
  */
-void residual(const double* f, const double* u, double* r, N_len Nlen, double dxs);
+void residual(const float* f, const float* u, float* r, N_len Nlen, float dxs);
 
 /*
  * This function calculates the residual of u and then reducing the residual to an m-1 grid
@@ -42,13 +42,13 @@ void residual(const double* f, const double* u, double* r, N_len Nlen, double dx
  * Nlen is the dimension of the fine gird.
  * dxs is the step size squared
  */
-void restriction(const double* f, const double* u, double* f_out, N_len Nlen, double dxs);
+void restriction(const float* f, const float* u, float* f_out, N_len Nlen, float dxs);
 
 /*
  * interpolates the function f into f_out where m is that of the coarse grid.
  * Nlen is that of the finer grid.
  * dx is the step size.
  */
-void interpolate(const double* f, double* f_out, N_len Nlen, double dx);
+void interpolate(const float* f, float* f_out, N_len Nlen, float dx);
 
 #endif //C_SOR_3D_OPERATORS_H

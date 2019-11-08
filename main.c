@@ -6,15 +6,15 @@
 #include <omp.h>
 #include "stuff.h"
 
-void solve_top(const double* f, double* u, N_len Nlen, double dx) {
+void solve_top(const float* f, float* u, N_len Nlen, float dx) {
     tSolve(f, u, Nlen, 2, 1.9, dx);
 }
 
-void solve_coarse(const double* f, double* u, N_len Nlen, double dx) {
+void solve_coarse(const float* f, float* u, N_len Nlen, float dx) {
     tSolve(f, u, Nlen, 5, 1, dx);
 }
 
-void solve_base(const double* f, double* u, N_len Nlen, double dx) {
+void solve_base(const float* f, float* u, N_len Nlen, float dx) {
     solve(f, u, Nlen, 1, 1, dx);
 }
 
@@ -22,16 +22,16 @@ void solve_base(const double* f, double* u, N_len Nlen, double dx) {
 int main() {
     int N = 257;
     N_len Nlen = (N_len){N, N, N};
-    double L = 20;
-    double dx = L/N;
-    double dens = 1;
-    double R = 1;
-    double a = 1;
-    double b = 1;
-    double c = 1;
-    double* u = calloc(sizeof(double), N*N*N);
-    double* u2 = calloc(sizeof(double), N*N*N);
-    double* f = calloc(sizeof(double), N*N*N);
+    float L = 20;
+    float dx = L/N;
+    float dens = 1;
+    float R = 1;
+    float a = 1;
+    float b = 1;
+    float c = 1;
+    float* u = calloc(sizeof(float), N*N*N);
+    float* u2 = calloc(sizeof(float), N*N*N);
+    float* f = calloc(sizeof(float), N*N*N);
 
 
 
@@ -46,8 +46,8 @@ int main() {
     //solve(f, u, (N_len){N, N, N}, 100, w, dx);
     //save_gird("data2.txt", u, N*N*N);
 
-    double total = 0;
-    double times = 1;
+    float total = 0;
+    float times = 1;
 
     funcs_args arg = (funcs_args){solve_top, solve_coarse, solve_base};
     for(int i = 0; i < times; i++) {
